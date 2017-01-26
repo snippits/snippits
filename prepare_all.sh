@@ -5,7 +5,7 @@ NC="\033[0;00m"
 
 function init_git(){
     cd $SCRIPT_DIR
-    git submodule update --init qemu_vpmu qemu_image snippit_ui
+    git submodule update --init qemu_vpmu qemu_image snippit_ui vpmu_controller
 }
 
 function prepare_qemu_vpmu() {
