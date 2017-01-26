@@ -1,0 +1,12 @@
+[submodule "qemu_vpmu"]
+	path = qemu_vpmu
+	url = https://github.com/snippits/qemu_vpmu
+	ignore = dirty
+[submodule "snippit_ui"]
+	path = snippit_ui
+	url = https://github.com/snippits/snippit_ui
+	ignore = dirty
+[submodule "qemu_image"]
+	path = qemu_image
+	url = https://github.com/snippits/qemu_image
+	ignore = dirty
