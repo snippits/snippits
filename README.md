@@ -14,6 +14,20 @@ Sample usages are:
 1. `snippit qemu vexpress`
 2. `snippit qemu -o ./demo vexpress`
 
+# Change window size
+Sometime the windows size (granularity) would affect the results and make it hard to read.
+Adjusting the window size is a way to inspect your code. Future version would be able to
+adjust window size offline. The current version can only do this when running program.
+Window size is assigned by environment variable in the unit of kilo instructions.
+Ex:
+* 200k instructions (default size) `PHASE_WINDOW_SIZE=200 snippit qemu vexpress`
+* 500k instructions `PHASE_WINDOW_SIZE=500 snippit qemu vexpress`
+
+One can also assign __env__ at any script.
+Ex:
+* `PHASE_WINDOW_SIZE=200 make execute -j8` in __qemu_vpmu/build__
+* `PHASE_WINDOW_SIZE=100 ./runQEMU.sh vexpress` in __qemu_image__
+
 # License
 1. __qemu_vpmu__ is released under GNU Library General Public License, version 2.0
 2. __qemu_image__ is released under MIT License
