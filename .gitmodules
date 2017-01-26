@@ -10,3 +10,7 @@
 	path = qemu_image
 	url = https://github.com/snippits/qemu_image
 	ignore = dirty
+[submodule "vpmu_controller"]
+	path = vpmu_controller
+	url = https://github.com/snippits/vpmu_controller
+	ignore = dirty

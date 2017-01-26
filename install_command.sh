@@ -1,4 +1,4 @@
-export RUN_QEMU_SCRIPT_PATH=$(dirname $0)/qemu_image
+export RUN_QEMU_SCRIPT_PATH=$(cd "$(dirname $0)/qemu_image" && pwd)
 
 function _complete_runQEMU_bash() {
     local -a cur prev opts imgs
