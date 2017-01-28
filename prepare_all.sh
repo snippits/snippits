@@ -9,9 +9,7 @@ function init_git(){
 }
 
 function prepare_qemu_vpmu() {
-    echo "##########################################################"
     echo -e "#    ${COLOR_GREEN}Prepare qemu_vpmu${NC}"
-    echo "##########################################################"
 
     cd $SCRIPT_DIR/qemu_vpmu
     mkdir -p build
@@ -21,9 +19,7 @@ function prepare_qemu_vpmu() {
 }
 
 function prepare_qemu_image() {
-    echo "##########################################################"
     echo -e "#    ${COLOR_GREEN}Prepare qemu_image${NC}"
-    echo "##########################################################"
 
     cd $SCRIPT_DIR/qemu_image
     ./download.sh
@@ -33,17 +29,13 @@ function prepare_qemu_image() {
 }
 
 function prepare_vpmu_controller() {
-    echo "##########################################################"
     echo -e "#    ${COLOR_GREEN}Prepare vpmu_controller${NC}"
-    echo "##########################################################"
     cd $SCRIPT_DIR/vpmu_controller
     make
 }
 
 function prepare_snippit_ui() {
-    echo "##########################################################"
     echo -e "#    ${COLOR_GREEN}Prepare snippit_ui${NC}"
-    echo "##########################################################"
 
 }
 

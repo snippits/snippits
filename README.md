@@ -5,6 +5,7 @@ This is the main repo of snippit, containing various of tools and repos.
 * gcc/g++ version >= __4.9__
 * [Highly recommand] clang/clang++ LLVM
 * ARM cross compiler gcc/g++ version >= 4.8 [linaro gcc 4.9](https://releases.linaro.org/14.11/components/toolchain/binaries/arm-linux-gnueabi/gcc-linaro-4.9-2014.11-x86_64_arm-linux-gnueabi.tar.xz).
+* Beta version supports only ARM target system. x86 would be supported in the future.
 
 # Usage
 1. Run `./prepare.sh` to set up the working environment
