@@ -1,5 +1,7 @@
 # Snippit
-This is the main repo of snippit, containing various of tools and repos.
+This is the main repo of snippit, containing various of tools and repos. Please use this to make sure the versions of all submodules are in consistent.
+
+The current versoin of __Snippits__ is __0.15__, the expected release date of version-1.0 is around the end of April, 2017.
 
 # Important Requirements
 * gcc/g++ version >= __4.9__
