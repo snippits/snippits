@@ -1,12 +1,20 @@
 # Snippit
 This is the main repo of snippit, containing various of tools and repos. Please use this to make sure the versions of all submodules are in consistent.
 
-The current versoin of __Snippits__ is __0.15__, the expected release date of version-1.0 is around the end of April, 2017.
+The current versoin of __Snippits__ is __0.15.2__, the expected release date of version-1.0 is around the end of April, 2017.
+# Features of 1.0
+1. Multi-core emulation
+2. Function call stack tracking
+3. Robust phase detection for general program
+4. Phase bottleneck analysis
+5. Heterogeneous-friendliness prediction
+6. FBT (Function Boundary Tracing) callbacks (Similar to DTrace)
+7. TBA
 
 # Important Requirements
 * gcc/g++ version >= __4.9__
 * [Highly recommand] clang/clang++ LLVM
-* ARM cross compiler gcc/g++ version >= 4.8 [linaro gcc 4.9](https://releases.linaro.org/14.11/components/toolchain/binaries/arm-linux-gnueabi/gcc-linaro-4.9-2014.11-x86_64_arm-linux-gnueabi.tar.xz).
+* ARM cross compiler gcc/g++ version >= 4.8 [linaro gcc 4.9](https://releases.linaro.org/components/toolchain/binaries/4.9-2016.02/arm-linux-gnueabi/gcc-linaro-4.9-2016.02-x86_64_arm-linux-gnueabi.tar.xz).
 * Beta version supports only ARM target system. x86 would be supported in the future.
 
 # Usage

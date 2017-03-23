@@ -1,11 +1,12 @@
-export RUN_QEMU_SCRIPT_PATH=$(cd "$(dirname $0)/qemu_image" && pwd)
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+export RUN_QEMU_SCRIPT_PATH=$(cd ${DIR}/qemu_image && pwd)
 
 function _complete_runQEMU_bash() {
     local -a cur prev opts imgs
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
     opts="-h --help -g -o"
-    imgs="arch vexpress realview"
+    imgs="arch vexpress realview debian"
 
     case "${prev}" in
         "-o")
@@ -26,6 +27,7 @@ function _complete_runQEMU_zsh() {
     images=('vexpress:Run Vexpress Image (ARM)' \
         'realview:Run Realview Image (ARM)' \
         'arch:Run Arch Linux Image (ARM)' \
+        'debian:Run Debian Linux Image (ARM)' \
         'x86_64:Run x86_64 Image' \
         )
 
@@ -100,8 +102,8 @@ if [[ -n "$ZSH_VERSION" ]]; then
     autoload colors && colors
 elif [[ -n "$BASH_VERSION" ]]; then
     # assume Bash
-    complete -o nosort -F _complete_snippit_bash snippit
-    complete -o nosort -F _complete_runQEMU_bash runQEMU.sh
+    complete -F _complete_snippit_bash snippit
+    complete -F _complete_runQEMU_bash runQEMU.sh
 fi
 
 
