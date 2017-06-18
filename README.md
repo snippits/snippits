@@ -1,15 +1,22 @@
 # Snippit
 This is the main repo of snippit, containing various of tools and repos. Please use this to make sure the versions of all submodules are in consistent.
 
-The current versoin of __Snippits__ is __0.15.2__, the expected release date of version-1.0 is around the end of April, 2017.
-# Features of 1.0
-1. Multi-core emulation
-2. Function call stack tracking
-3. Robust phase detection for general program
-4. Phase bottleneck analysis
-5. Heterogeneous-friendliness prediction
-6. FBT (Function Boundary Tracing) callbacks (Similar to DTrace)
-7. TBA
+# Change Log
+## Features of 0.7
+1. Upgrade to QEMU 2.9
+2. Multi-core emulation support (timing and phases are still in progress)
+3. Massively refactor codes and folders
+4. Many bugs fixed
+5. Kernel TSS (Thread State Segment) support
+6. Device driver now supports Linux 3.0 - latest
+
+## Up Comming Features
+1. Function call stack tracking
+2. Robust phase detection for general program
+3. Phase bottleneck analysis
+4. Heterogeneous-friendliness prediction
+5. FBT (Function Boundary Tracing) callbacks (Similar to DTrace)
+6. TBA
 
 # Important Requirements
 * gcc/g++ version >= __4.9__

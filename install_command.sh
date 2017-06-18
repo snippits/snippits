@@ -6,7 +6,7 @@ function _complete_runQEMU_bash() {
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
     opts="-h --help -g -o"
-    imgs="arch vexpress realview debian"
+    imgs="arch vexpress debian x86_busybox x86_arch"
 
     case "${prev}" in
         "-o")
@@ -25,10 +25,10 @@ function _complete_runQEMU_zsh() {
         '-o:Specify the output directory for emulation' \
         )
     images=('vexpress:Run Vexpress Image (ARM)' \
-        'realview:Run Realview Image (ARM)' \
         'arch:Run Arch Linux Image (ARM)' \
         'debian:Run Debian Linux Image (ARM)' \
-        'x86_64:Run x86_64 Image' \
+        'x86_busybox:Run x86 image (x86)' \
+        'x86_arch:Run arch image (x86)' \
         )
 
     last_arg=$words[${#words[@]}-1]
