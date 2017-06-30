@@ -49,8 +49,8 @@ function prepare_qemu_image() {
     ./download.sh
     [[ $? != 0 ]] && print_message_and_exit "Download pre-built image"
     ./extract_cpio.sh
-    arm-linux-gnueabihf-gcc -g ./matrix_mul.c -o ./matrix
-    [[ $? != 0 ]] && print_message_and_exit "arm-linux-gnueabihf-gcc"
+    arm-linux-gnueabi-gcc -g ./matrix_mul.c -o ./matrix
+    [[ $? != 0 ]] && print_message_and_exit "arm-linux-gnueabi-gcc"
     sudo cp ./matrix ./rootfs/root/test_set/
     ./cpioBuild.sh
 }
@@ -83,14 +83,14 @@ function test_binary_dep() {
             "${NC}\n"
     fi
 
-    if check_command arm-linux-gnueabihf-gcc || check_command arm-linux-gnueabihf-g++; then # Not found
+    if check_command arm-linux-gnueabi-gcc || check_command arm-linux-gnueabi-g++; then # Not found
         echo -e "${COLOR_RED}" \
             "[REQUIRED]" \
-            "arm-linux-gnueabihf-gcc is not found in \$PATH.\n" \
+            "arm-linux-gnueabi-gcc is not found in \$PATH.\n" \
             "  Please download it and set in the \$PATH" \
             "${NC}\n"
         echo "Please download Linaro ARM gcc from here:"
-        echo "https://releases.linaro.org/components/toolchain/binaries/4.9-2017.01/arm-linux-gnueabihf/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf.tar.xz"
+        echo "https://releases.linaro.org/components/toolchain/binaries/4.9-2017.01/arm-linux-gnueabi/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi.tar.xz"
         exit 1
     fi
 }
