@@ -7,7 +7,7 @@ function run_demo() {
     cd "$SCRIPT_DIR/qemu_image"
     ./do_test.expect "./profile.sh --phase ./test_set/matrix" 1 "$SCRIPT_DIR/demo"
     cd "$SCRIPT_DIR"
-    ./snippit_ui/scripts/parse.py -i ./demo/phase/*
+    ./snippit_ui/scripts/parse.py -i ./demo/phase/* -c
     cd "$SCRIPT_DIR/snippit_ui/public"
     python3 -m http.server
 }
