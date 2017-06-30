@@ -36,6 +36,8 @@ The current version has only one sub-command, qemu.
 Sample usages are:
 1. `snippit qemu vexpress`
 2. `snippit qemu -o ./demo vexpress`
+3. `snippit image list`
+4. `snippit image ls rootfs@/root`
 
 # Change window size
 Sometime the windows size (granularity) would affect the results and make it hard to read.
