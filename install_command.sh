@@ -26,11 +26,13 @@ function _complete_runQEMU_bash() {
     local -a cur prev opts imgs
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts="-h --help -g -o"
+    opts="-h --help -g -gg -o -net -smp -m -snapshot -enable-kvm -drive"
     imgs="arch vexpress debian x86_busybox x86_arch"
 
     case "${prev}" in
-        "-o")
+        "-smp" | "-m")
+            ;;
+        "-o" | "-drive")
             COMPREPLY=($(compgen -f "${cur}"))
             ;;
         *)
@@ -66,7 +68,13 @@ function _complete_runQEMU_zsh() {
     local -a options images last_arg
     options=('-h:Display help message and information of usage.' \
         '-g:Use gdb to run QEMU for debugging' \
+        '-gg:Run QEMU with remote gdb mode to debug guest program' \
         '-o:Specify the output directory for emulation' \
+        '-smp:Number of cores (default: 1)' \
+        '-m:Size of memory (MB) (default: 1024)' \
+        '-snapshot:Run with read only guest image' \
+        '-enable-kvm:Enable KVM' \
+        '-drive:Hook another disk image to guest' \
         )
     images=('vexpress:Run Vexpress Image (ARM)' \
         'arch:Run Arch Linux Image (ARM)' \
@@ -79,6 +87,12 @@ function _complete_runQEMU_zsh() {
     case "$last_arg" in
         "-o")
             _alternative 'files:filenames:_directories'
+            ;;
+        "-drive")
+            _alternative 'files:filenames:_files'
+            ;;
+        "-m" | "-smp")
+            # Do no completion here
             ;;
         *)
             _describe -V 'values' options
