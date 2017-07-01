@@ -45,7 +45,7 @@ function prepare_qemu_vpmu() {
 function prepare_qemu_image() {
     echo -e "#    ${COLOR_GREEN}Prepare qemu_image${NC}"
 
-    cd $SCRIPT_DIR/qemu_image
+    cd $SCRIPT_DIR/qemu_image/images
     ./download.sh
     [[ $? != 0 ]] && print_message_and_exit "Download pre-built image"
     ./extract_cpio.sh
