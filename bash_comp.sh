@@ -11,71 +11,76 @@ function _get_image_list() {
 }
 
 function _complete_runQEMU() {
-    local -a cur prev opts imgs
-    cur="${COMP_WORDS[COMP_CWORD]}"
-    prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts="-h --help -g -gg -o -net -smp -m -snapshot -enable-kvm -drive"
-    imgs="arch vexpress debian x86_busybox x86_arch"
+    local prev_arg=${COMP_WORDS[COMP_CWORD-1]}
+    local cur_arg=${COMP_WORDS[COMP_CWORD]}
+    local num_args=$(( $COMP_CWORD + 1 )) # Including the current cursor argument
+    local s_words=("" "${COMP_WORDS[@]}")
+    if [[ "${s_words[1]}" == "snippit" ]]; then
+        s_words=("${s_words[@]:1}")   # Shift one argument
+        num_args=$(( $num_args - 1 )) # Shift one argument
+    fi
+    local options="-h --help -g -gg -o -net -smp -m -snapshot -enable-kvm -drive"
+    local images="arch vexpress debian x86_busybox x86_arch"
 
-    case "${prev}" in
+    case "$prev_arg" in
         "-smp" | "-m")
             ;;
         "-o" | "-drive")
-            COMPREPLY=($(compgen -f "${cur}"))
+            COMPREPLY=($(compgen -f "$cur_arg"))
             ;;
         *)
-            COMPREPLY=( $(compgen -W "${opts} ${imgs}"  -- ${cur}) )
+            COMPREPLY=( $(compgen -W "$options $images"  -- $cur_arg) )
             ;;
     esac
 }
 
 function _complete_image_manager() {
-    local -a cur prev opts
-    local operation num_args
-    cur="${COMP_WORDS[COMP_CWORD]}"
-    prev="${COMP_WORDS[COMP_CWORD-1]}"
-    if [[ "${COMP_WORDS[0]}" == "snippit" ]]; then
-        operation="${COMP_WORDS[2]}"
-        num_args=$(($COMP_CWORD - 1))
-    else
-        operation="${COMP_WORDS[1]}"
-        num_args=$COMP_CWORD
+    local prev_arg=${COMP_WORDS[COMP_CWORD-1]}
+    local cur_arg=${COMP_WORDS[COMP_CWORD]}
+    local num_args=$(( $COMP_CWORD + 1 )) # Including the current cursor argument
+    local s_words=("" "${COMP_WORDS[@]}")
+    if [[ "${s_words[1]}" == "snippit" ]]; then
+        s_words=("${s_words[@]:1}")   # Shift one argument
+        num_args=$(( $num_args - 1 )) # Shift one argument
     fi
-    opts="-h --help list push pull ls rm mkdir"
+    local operation=${s_words[2]}
+    local options="-h --help list push pull ls rm mkdir"
 
-    [[ $snippit_update_flag == 0 ]] && snippit_update_flag=1 && snippit_image_list=$(_get_image_list)
-    case "${operation}" in
+    if [[ $snippit_update_flag == 0 ]]; then
+        snippit_update_flag=1
+        snippit_image_list=$(_get_image_list)
+    fi
+    case "$operation" in
         "push")
-            [[ $num_args == 2 ]] && COMPREPLY=($(compgen -f "${cur}"))
-            [[ $num_args == 3 ]] && COMPREPLY=( $(compgen -W "${snippit_image_list}" -- ${cur}) )
+            [[ $num_args == 3 ]] && COMPREPLY=($(compgen -f "$cur_arg"))
+            [[ $num_args == 4 ]] && COMPREPLY=( $(compgen -W "${snippit_image_list}" -- $cur_arg) )
             ;;
         "pull")
-            [[ $num_args == 2 ]] && COMPREPLY=( $(compgen -W "${snippit_image_list}" -- ${cur}) )
-            [[ $num_args == 3 ]] && COMPREPLY=($(compgen -f "${cur}"))
+            [[ $num_args == 3 ]] && COMPREPLY=( $(compgen -W "${snippit_image_list}" -- $cur_arg) )
+            [[ $num_args == 4 ]] && COMPREPLY=($(compgen -f "$cur_arg"))
             ;;
         "ls" | "rm" | "mkdir")
-            [[ $num_args == 2 ]] && COMPREPLY=( $(compgen -W "${snippit_image_list}" -- ${cur}) )
+            [[ $num_args == 3 ]] && COMPREPLY=( $(compgen -W "${snippit_image_list}" -- $cur_arg) )
             ;;
         *)
-            COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+            [[ $num_args == 2 ]] && COMPREPLY=( $(compgen -W "$options" -- $cur_arg) )
             ;;
     esac
 }
 
 function _complete_snippit() {
-    local -a cur prev opts imgs
-    cur="${COMP_WORDS[COMP_CWORD]}"
-    opts="qemu image"
+    local cur_arg=${COMP_WORDS[COMP_CWORD]}
+    local options="qemu image"
 
-    case ${COMP_WORDS[1]} in
-        qemu)
+    case "${COMP_WORDS[1]}" in
+        "qemu")
             _complete_runQEMU
             ;;
-        image)
+        "image")
             _complete_image_manager
             ;;
         *)
-            COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+            COMPREPLY=( $(compgen -W "${options}" -- ${cur_arg}) )
             ;;
     esac
 }
