@@ -4,19 +4,17 @@ snippit_image_list=""
 snippit_update_flag=0
 
 function _get_image_list() {
-    local res=$($RUN_QEMU_SCRIPT_PATH/image_manager.sh list | awk '{print $1}')
+    local res=$($RUN_QEMU_SCRIPT_PATH/image_manager.sh list | sed 1,1d | awk '{print $1}')
+    res=($res) # Convert to array
+
     if [[ -n "$ZSH_VERSION" ]]; then
         # assume Zsh
-        res=("${(f)res}") # Line-separated string to array
-
-        for f in $res[2,-1]; do # Loop start from second to last element
+        for f in "${res[@]}"; do
             echo $f
         done
     elif [[ -n "$BASH_VERSION" ]]; then
         # assume Bash
-        res=($res) # Line-separated string to array
-
-        for f in "${res[@]:1}"; do # Loop start from second to last element
+        for f in "${res[@]}"; do
             echo "${f}@/"
         done
     fi
