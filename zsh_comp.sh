@@ -61,9 +61,23 @@ function _complete_image_and_path() {
         # Complete image when typing before @
         _sep_parts "($snippit_image_list)" @/
     else
-        # TODO Complete path when typing after @
+        # Complete path when typing after @
         local image_name=${cur_arg%%@*}
         local target_dir=${cur_arg##*@}
+        local image_rootfs="$RUN_QEMU_SCRIPT_PATH/images/rootfs"
+        local e2fs_mount_point=$(mount | grep "$image_name" | cut -d " " -f 3)
+
+        if [[ "$e2fs_mount_point" != "" ]]; then
+            image_rootfs="$e2fs_mount_point"
+        fi
+        if [[ $(ls "$image_rootfs" | wc -l) == 0 ]]; then
+            _message -r "Image is not mounted(e2fs) or extracted(cpio). No path completion can be done..."
+            _message -r "See more in https://github.com/snippits/snippits/blob/master/README.md#completion"
+        fi
+
+        if compset -P '*@/'; then
+            _files -W "$image_rootfs"
+        fi
     fi
 }
 
