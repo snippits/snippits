@@ -30,24 +30,31 @@ function _complete_runQEMU() {
 }
 
 function _complete_image_manager() {
-    local -a cur prev opts operation
+    local -a cur prev opts
+    local operation num_args
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    operation="${COMP_WORDS[2]}"
+    if [[ "${COMP_WORDS[0]}" == "snippit" ]]; then
+        operation="${COMP_WORDS[2]}"
+        num_args=$(($COMP_CWORD - 1))
+    else
+        operation="${COMP_WORDS[1]}"
+        num_args=$COMP_CWORD
+    fi
     opts="-h --help list push pull ls rm mkdir"
 
     [[ $snippit_update_flag == 0 ]] && snippit_update_flag=1 && snippit_image_list=$(_get_image_list)
     case "${operation}" in
         "push")
-            [[ $COMP_CWORD == 3 ]] && COMPREPLY=($(compgen -f "${cur}"))
-            [[ $COMP_CWORD == 4 ]] && COMPREPLY=( $(compgen -W "${snippit_image_list}" -- ${cur}) )
+            [[ $num_args == 2 ]] && COMPREPLY=($(compgen -f "${cur}"))
+            [[ $num_args == 3 ]] && COMPREPLY=( $(compgen -W "${snippit_image_list}" -- ${cur}) )
             ;;
         "pull")
-            [[ $COMP_CWORD == 3 ]] && COMPREPLY=( $(compgen -W "${snippit_image_list}" -- ${cur}) )
-            [[ $COMP_CWORD == 4 ]] && COMPREPLY=($(compgen -f "${cur}"))
+            [[ $num_args == 2 ]] && COMPREPLY=( $(compgen -W "${snippit_image_list}" -- ${cur}) )
+            [[ $num_args == 3 ]] && COMPREPLY=($(compgen -f "${cur}"))
             ;;
         "ls" | "rm" | "mkdir")
-            [[ $COMP_CWORD == 3 ]] && COMPREPLY=( $(compgen -W "${snippit_image_list}" -- ${cur}) )
+            [[ $num_args == 2 ]] && COMPREPLY=( $(compgen -W "${snippit_image_list}" -- ${cur}) )
             ;;
         *)
             COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )

@@ -48,7 +48,8 @@ function _complete_runQEMU() {
 }
 
 function _complete_image_manager() {
-    local -a options actions operation num_args images file_list
+    local -a options actions images s_words
+    local num_args operation
     options=('-h:Display help message and information of usage.' \
         )
     actions=('list:List all existing images' \
@@ -59,26 +60,37 @@ function _complete_image_manager() {
         'mkdir:Make a folder in image' \
         )
 
-    operation="${words[3]}"
-    num_args=${#words[@]}
-    [[ $snippit_update_flag == 0 ]] && snippit_update_flag=1 && snippit_image_list=$(_get_image_list)
+    if [[ "${words[1]}" == "snippit" ]]; then
+        s_words=(${words:1})
+        num_args=$((${#words[@]} - 1))
+    else
+        s_words=(${words})
+        num_args=${#words[@]}
+    fi
+    operation="${s_words[2]}"
+    if [[ $snippit_update_flag == 0 ]] && [[ $num_args > 2 ]] ;then
+        snippit_update_flag=1
+        snippit_image_list=$(_get_image_list)
+    fi
     case "$operation" in
         "push")
-            [[ $num_args == 4 ]] &&  _alternative 'files:filenames:_files'
-            [[ $num_args == 5 ]] &&  _sep_parts "($snippit_image_list)" @/
+            [[ $num_args == 3 ]] &&  _alternative 'files:filenames:_files'
+            [[ $num_args == 4 ]] &&  _sep_parts "($snippit_image_list)" @/
             ;;
         "pull")
-            [[ $num_args == 4 ]] &&  _sep_parts "($snippit_image_list)" @/
-            [[ $num_args == 5 ]] &&  _alternative 'files:filenames:_files'
+            [[ $num_args == 3 ]] &&  _sep_parts "($snippit_image_list)" @/
+            [[ $num_args == 4 ]] &&  _alternative 'files:filenames:_files'
             ;;
         "ls" | "rm" | "mkdir")
-            [[ $num_args == 4 ]] &&  _sep_parts "($snippit_image_list)" @/
+            [[ $num_args == 3 ]] &&  _sep_parts "($snippit_image_list)" @/
             ;;
         *)
             _describe -V 'values' options
-            _describe -V 'values' actions
             ;;
     esac
+    if [[ $num_args == 2 ]]; then
+        _describe -V 'values' actions
+    fi
 }
 
 function _complete_snippit() {
