@@ -1,5 +1,5 @@
 #!/bin/bash
-SCRIPT_DIR=$(cd "$(dirname $0)" && pwd)
+SCRIPT_DIR=$(readlink -f "$(dirname "${BASH_SOURCE[0]}")")
 COLOR_RED='\033[1;31m'
 COLOR_GREEN='\033[1;32m'
 COLOR_YELLOW='\033[1;33m'
@@ -22,7 +22,7 @@ function print_message_and_exit() {
 }
 
 function init_git(){
-    cd $SCRIPT_DIR
+    cd "$SCRIPT_DIR"
     git submodule update --init qemu_vpmu qemu_image snippit_ui vpmu_controller
     [[ $? != 0 ]] && print_message_and_exit "git submodule"
 }
@@ -30,9 +30,8 @@ function init_git(){
 function prepare_qemu_vpmu() {
     echo -e "#    ${COLOR_GREEN}Prepare qemu_vpmu${NC}"
 
-    cd $SCRIPT_DIR/qemu_vpmu
-    mkdir -p build
-    cd build
+    mkdir -p "$SCRIPT_DIR/qemu_vpmu/build"
+    cd "$SCRIPT_DIR/qemu_vpmu/build"
     if [[ ! -f ./config-host.mak ]]; then
         # Only do configure when it is the first time executing this
         ../configure '--target-list=arm-softmmu x86_64-softmmu' '--enable-vpmu' '--enable-vpmu-set'
@@ -45,8 +44,9 @@ function prepare_qemu_vpmu() {
 function prepare_qemu_image() {
     echo -e "#    ${COLOR_GREEN}Prepare qemu_image${NC}"
 
-    cd $SCRIPT_DIR/qemu_image/images
+    cd "$SCRIPT_DIR/qemu_image"
     ./download.sh
+    cd "$SCRIPT_DIR/qemu_image/images"
     [[ $? != 0 ]] && print_message_and_exit "Download pre-built image"
     ./extract_cpio.sh
     arm-linux-gnueabi-gcc -g ./matrix_mul.c -o ./matrix
@@ -57,7 +57,7 @@ function prepare_qemu_image() {
 
 function prepare_vpmu_controller() {
     echo -e "#    ${COLOR_GREEN}Prepare vpmu_controller${NC}"
-    cd $SCRIPT_DIR/vpmu_controller
+    cd "$SCRIPT_DIR/vpmu_controller"
     make
     [[ $? != 0 ]] && print_message_and_exit "Make vpmu controller"
 }
