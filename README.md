@@ -53,6 +53,16 @@ Ex:
 * `PHASE_WINDOW_SIZE=200 make execute -j8` in __qemu_vpmu/build__
 * `PHASE_WINDOW_SIZE=100 ./runQEMU.sh vexpress` in __qemu_image__
 
+# Completion System
+The `install_command.sh` support completions for all main scripts and `snippit` command. Both __bash__ and __zsh__ are supported.
+
+In addition, the completion in __zsh__ perform much better and provide full support in image sub-command, i.e. path completion for target image(ext2, ext3, ext4, cpio).
+
+## e2fs filesystem support
+Please install `fusermount` and `ext4fuse` commands for e2fs filesystem completion support.
+The completion system is built on user level with read-only permission, which means it's safe.
+If you cannot find `ext4fuse` in your package manager, please refer to [gerard/ext4fuse](https://github.com/gerard/ext4fuse).
+
 # License
 1. __qemu_vpmu__ is released under GNU Library General Public License, version 2.0
 2. __qemu_image__ is released under MIT License
