@@ -25,7 +25,7 @@ This is the main repo of snippit, containing various of tools and repos. Please 
 * Beta version supports only ARM target system. x86 would be supported in the future.
 
 # Usage
-1. Run `./prepare.sh` to set up the working environment
+1. Run `./prepare.sh` to set up the working environment. To enable debug mode of QEMU, run `DEBUG=on ./prepare_all.sh` instead.
 2. Run `source ./install_command.sh` to get snippit command and completions
 3. Run `./demo.sh` to run a demo of snippit
 

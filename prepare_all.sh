@@ -23,7 +23,8 @@ function print_message_and_exit() {
 
 function init_git(){
     cd "$SCRIPT_DIR"
-    git submodule update --init qemu_vpmu qemu_image snippit_ui vpmu_controller
+    # Shallow clone to save time
+    git submodule update --init --depth 10 qemu_vpmu qemu_image snippit_ui vpmu_controller
     [[ $? != 0 ]] && print_message_and_exit "git submodule"
 }
 
@@ -34,7 +35,13 @@ function prepare_qemu_vpmu() {
     cd "$SCRIPT_DIR/qemu_vpmu/build"
     if [[ ! -f ./config-host.mak ]]; then
         # Only do configure when it is the first time executing this
-        ../configure '--target-list=arm-softmmu x86_64-softmmu' '--enable-vpmu' '--enable-vpmu-set'
+        if [[ "$DEBUG" == "" ]]; then
+            echo "VPMU debug option is off"
+            ../configure '--target-list=arm-softmmu x86_64-softmmu' '--enable-vpmu' '--enable-vpmu-set'
+        else
+            echo "VPMU debug option is on"
+            ../configure '--target-list=arm-softmmu x86_64-softmmu' '--enable-vpmu' '--enable-vpmu-set' '--enable-vpmu-debug'
+        fi
     fi
     [[ $? != 0 ]] && print_message_and_exit "QEMU configure script"
     make -j8
@@ -48,11 +55,10 @@ function prepare_qemu_image() {
     ./download.sh
     cd "$SCRIPT_DIR/qemu_image/images"
     [[ $? != 0 ]] && print_message_and_exit "Download pre-built image"
-    ./extract_cpio.sh
     arm-linux-gnueabi-gcc -g ./matrix_mul.c -o ./matrix
     [[ $? != 0 ]] && print_message_and_exit "arm-linux-gnueabi-gcc"
-    sudo cp ./matrix ./rootfs/root/test_set/
-    ./cpioBuild.sh
+    ../image_manager.sh push ./matrix rootfs.cpio@/root/test_set/
+    [[ $? != 0 ]] && print_message_and_exit "./image_manager.sh push"
 }
 
 function prepare_vpmu_controller() {
