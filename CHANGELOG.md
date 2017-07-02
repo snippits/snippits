@@ -2,6 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+- (qemu_vpmu) Fix several bugs
 
 ## [0.7.5] - 2017-07-02
 ### Added
