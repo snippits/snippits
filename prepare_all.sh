@@ -1,4 +1,6 @@
 #!/bin/bash
+# Copyright (c) 2017, Medicine Yeh
+
 SCRIPT_DIR=$(readlink -f "$(dirname "${BASH_SOURCE[0]}")")
 COLOR_RED='\033[1;31m'
 COLOR_GREEN='\033[1;32m'

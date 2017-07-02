@@ -1,4 +1,5 @@
 #!/usr/bin/bash
+# Copyright (c) 2017, Medicine Yeh
 
 snippit_image_list=""
 snippit_update_flag=0
