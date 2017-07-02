@@ -2,12 +2,94 @@
 
 snippit_image_list=""
 snippit_update_flag=0
+
+snippit_cpio_rootfs_dir="$(readlink -f "${SNIPPIT_HOME}/.rootfs_cpio")"
+snippit_e2fs_rootfs_dir="$(readlink -f "${SNIPPIT_HOME}/.rootfs_e2fs")"
+snippit_comp_rootfs=""
+
 function _get_image_list() {
     local res=$($RUN_QEMU_SCRIPT_PATH/image_manager.sh list | sed 1,1d | awk '{print $1}')
     res=($res) # Convert to array
     for f in "${res[@]}"; do
         echo $f
     done
+}
+
+# Timeout in 5s. This value cannot be too long in order to ensure the mounted dir is latest completion.
+# If we wait too long, when a user change the image and the directory would be wrong image's.
+function timed_user_remove_cpio() {
+    sleep 5s
+    [[ -d "$1" ]] && rm -rf "$1" 2> /dev/null
+    mkdir -p "$1"
+}
+
+function timed_user_unmount_e2fs() {
+    sleep 5s
+    [[ -d "$1" ]] && fusermount -qu "$1" 2> /dev/null
+}
+
+function user_extract_cpio() {
+    local file_path="$(readlink -f "$1")"
+    snippit_comp_rootfs="$snippit_cpio_rootfs_dir"
+    [[ ! -r "$file_path" ]] && exit 4
+    mkdir -p "$snippit_cpio_rootfs_dir"
+    (
+        # Run as detached process so that no working directory change to the user
+        cd "$snippit_cpio_rootfs_dir"
+        # Do the dangerous operation only when the current directory is correct for safety
+        if [[ "$(pwd)" == "$snippit_cpio_rootfs_dir" ]]; then
+            cpio -idu --quiet < "$file_path" 2> /dev/null
+            (timed_user_remove_cpio "$snippit_cpio_rootfs_dir" &)
+        fi
+    )
+}
+
+# NOTE: return 0 when command not found and return 1 when found
+function _check_command() {
+    command_found=$(command -v "$1" 2> /dev/null)
+    if [[ "$command_found" == "" ]]; then
+        return 0 # NOT found
+    else
+        return 1 # Found
+    fi
+}
+
+function user_mount_image() {
+    local tmp=($($RUN_QEMU_SCRIPT_PATH/image_manager.sh query image_path_and_type "$1"))
+    local image_path="${tmp[1]}"
+    local image_type="${tmp[2]}"
+    local duration=$3
+
+    # Reset the return path to target rootfs for completion
+    snippit_comp_rootfs=""
+
+    case "$image_type" in
+    "CPIO")
+        user_extract_cpio "$image_path"
+        ;;
+    "EXT2" | "EXT3" | "EXT4")
+        snippit_comp_rootfs="$snippit_e2fs_rootfs_dir"
+        mkdir -p "$snippit_e2fs_rootfs_dir"
+        if _check_command ext4fuse || _check_command fusermount; then
+            _check_command ext4fuse && _message -r "ext4fuse command not found. No completion can be done."
+            _check_command fusermount && _message -r "fusermount command not found. No completion can be done."
+        else
+            # Only mount when both command are available
+            if mountpoint -q "$snippit_e2fs_rootfs_dir"; then
+                # Since previous mount point will be unmount automatically, do not unmount here.
+                # Do nothing if the directory is already mounted
+            else
+                ext4fuse -r "$image_path" "$snippit_e2fs_rootfs_dir" 2> /dev/null
+                err_code=$?
+                [[ $err_code != 0 ]] && _message -r "Error code $err_code presents when using ext4fuse"
+                (timed_user_unmount_e2fs "$snippit_e2fs_rootfs_dir" &)
+            fi
+        fi
+        ;;
+    "MBR")
+        return 4
+        ;;
+    esac
 }
 
 function _complete_runQEMU() {
@@ -64,19 +146,11 @@ function _complete_image_and_path() {
         # Complete path when typing after @
         local image_name=${cur_arg%%@*}
         local target_dir=${cur_arg##*@}
-        local image_rootfs="$RUN_QEMU_SCRIPT_PATH/images/rootfs"
-        local e2fs_mount_point=$(mount | grep "$image_name" | cut -d " " -f 3)
 
-        if [[ "$e2fs_mount_point" != "" ]]; then
-            image_rootfs="$e2fs_mount_point"
-        fi
-        if [[ $(ls "$image_rootfs" | wc -l) == 0 ]]; then
-            _message -r "Image is not mounted(e2fs) or extracted(cpio). No path completion can be done..."
-            _message -r "See more in https://github.com/snippits/snippits/blob/master/README.md#completion"
-        fi
+        user_mount_image "$image_name"
 
-        if compset -P '*@/'; then
-            _files -W "$image_rootfs"
+        if [[ -d "$snippit_comp_rootfs" ]] && compset -P '*@/'; then
+            _files -W "$snippit_comp_rootfs"
         fi
     fi
 }

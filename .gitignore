@@ -1,1 +1,5 @@
 demo
+
+# Temporary directory for completion systems
+.rootfs_cpio
+.rootfs_e2fs
