@@ -24,10 +24,11 @@ This is the main repo of snippit, containing various of tools and repos. Please 
 * ARM cross compiler gcc/g++ version >= 4.8 [linaro gcc 4.9](https://releases.linaro.org/components/toolchain/binaries/4.9-2017.01/arm-linux-gnueabi/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi.tar.xz).
 * Beta version supports only ARM target system. x86 would be supported in the future.
 
-# Usage
-1. Run `./prepare.sh` to set up the working environment. To enable debug mode of QEMU, run `DEBUG=on ./prepare_all.sh` instead.
+# Quick Start Demo
+1. Run `./prepare.sh` to set up the working environment.
 2. Run `source ./install_command.sh` to get snippit command and completions
 3. Run `./demo.sh` to run a demo of snippit
+4. Open browser and enter URL [http://0.0.0.0:8000/](http://0.0.0.0:8000/)
 
 # Snippit command
 The __snippit command__ can be executed at any working directory. The command leads

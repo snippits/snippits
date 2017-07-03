@@ -7,6 +7,20 @@ COLOR_GREEN='\033[1;32m'
 COLOR_YELLOW='\033[1;33m'
 NC='\033[0;00m'
 
+function ask_response()
+{
+    local user_decision=""
+
+    if [[ -n "$ZSH_VERSION" ]]; then
+        read user_decision\?"${1}`echo $'\n> '`default[${2}]?"
+    else
+        read -p "${1}`echo $'\ndefault '`[${2}]? " user_decision
+    fi
+
+    [[ "$user_decision" != "" ]] && echo "$user_decision"
+    [[ "$user_decision" == "" ]] && echo "$2"
+}
+
 # NOTE: return 0 when command not found and return 1 when found
 function check_command() {
     command_found=$(command -v "$1" 2> /dev/null)
@@ -37,7 +51,7 @@ function prepare_qemu_vpmu() {
     cd "$SCRIPT_DIR/qemu_vpmu/build"
     if [[ ! -f ./config-host.mak ]]; then
         # Only do configure when it is the first time executing this
-        if [[ "$DEBUG" == "" ]]; then
+        if [[ "$enable_vpmu_debug" == "n" ]]; then
             echo "VPMU debug option is off"
             ../configure '--target-list=arm-softmmu x86_64-softmmu' '--enable-vpmu' '--enable-vpmu-set'
         else
@@ -102,6 +116,9 @@ function test_binary_dep() {
         exit 1
     fi
 }
+
+# Configurable variables
+enable_vpmu_debug=$(ask_response "Enable QEMU VPMU debug message? (y/n)" "n")
 
 test_binary_dep
 init_git

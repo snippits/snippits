@@ -9,6 +9,7 @@ function run_demo() {
     cd "$SCRIPT_DIR"
     ./snippit_ui/scripts/parse.py -i ./demo/phase/* -c
     cd "$SCRIPT_DIR/snippit_ui/public"
+    echo "Please open your browser and enter the following URL"
     python3 -m http.server
 }
 
