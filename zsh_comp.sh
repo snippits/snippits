@@ -94,13 +94,15 @@ function user_mount_image() {
 }
 
 function _complete_runQEMU() {
-    local prev_arg=$words[${#words[@]}-1]
-    local cur_arg=$words[${#words[@]}]
+    local prev_arg=$words[${CURRENT}-1]
+    local cur_arg=$words[${CURRENT}]
     local num_args=${#words[@]} # Including the current cursor argument
+    local curr_arg_num=$CURRENT
     local s_words=(${words})
     if [[ "${s_words[1]}" == "snippit" ]]; then
         s_words=(${s_words:1})        # Shift one argument
         num_args=$(( $num_args - 1 )) # Shift one argument
+        curr_arg_num=$(( $curr_arg_num - 1 ))
     fi
     local options=('-h:Display help message and information of usage.' \
         '--help:Display help message and information of usage.' \
@@ -157,13 +159,15 @@ function _complete_image_and_path() {
 }
 
 function _complete_image_manager() {
-    local prev_arg=$words[${#words[@]}-1]
-    local cur_arg=$words[${#words[@]}]
+    local prev_arg=$words[${CURRENT}-1]
+    local cur_arg=$words[${CURRENT}]
     local num_args=${#words[@]} # Including the current cursor argument
+    local curr_arg_num=$CURRENT
     local s_words=(${words})
     if [[ "${s_words[1]}" == "snippit" ]]; then
         s_words=(${s_words:1})        # Shift one argument
         num_args=$(( $num_args - 1 )) # Shift one argument
+        curr_arg_num=$(( $curr_arg_num - 1 ))
     fi
     local operation=${s_words[2]}
     local options=('-h:Display help message and information of usage.' \
@@ -183,19 +187,19 @@ function _complete_image_manager() {
     fi
     case "$operation" in
         "push")
-            [[ $num_args == 3 ]] &&  _alternative 'files:filenames:_files'
-            [[ $num_args == 4 ]] &&  _complete_image_and_path
+            [[ $curr_arg_num == 3 ]] &&  _alternative 'files:filenames:_files'
+            [[ $curr_arg_num == 4 ]] &&  _complete_image_and_path
             ;;
         "pull")
-            [[ $num_args == 3 ]] &&  _complete_image_and_path
-            [[ $num_args == 4 ]] &&  _alternative 'files:filenames:_files'
+            [[ $curr_arg_num == 3 ]] &&  _complete_image_and_path
+            [[ $curr_arg_num == 4 ]] &&  _alternative 'files:filenames:_files'
             ;;
         "ls" | "rm" | "mkdir")
-            [[ $num_args == 3 ]] &&  _complete_image_and_path
+            [[ $curr_arg_num == 3 ]] &&  _complete_image_and_path
             ;;
         *)
             # We are now in second argument
-            if [[ $num_args == 2 ]]; then
+            if [[ $curr_arg_num == 2 ]]; then
                 _describe -V 'values' options
                 _describe -V 'values' actions
             fi

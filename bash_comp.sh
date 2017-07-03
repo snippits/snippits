@@ -14,11 +14,13 @@ function _get_image_list() {
 function _complete_runQEMU() {
     local prev_arg=${COMP_WORDS[COMP_CWORD-1]}
     local cur_arg=${COMP_WORDS[COMP_CWORD]}
-    local num_args=$(( $COMP_CWORD + 1 )) # Including the current cursor argument
+    local num_args=${#COMP_WORDS[@]}          # Including the current cursor argument
+    local curr_arg_num=$(( $COMP_CWORD + 1 )) # Including the current cursor argument
     local s_words=("" "${COMP_WORDS[@]}")
     if [[ "${s_words[1]}" == "snippit" ]]; then
         s_words=("${s_words[@]:1}")   # Shift one argument
         num_args=$(( $num_args - 1 )) # Shift one argument
+        curr_arg_num=$(( $curr_arg_num - 1 ))
     fi
     local options="-h --help -g -gg -o -net -smp -m -snapshot -enable-kvm -drive"
     local images="arch vexpress debian x86_busybox x86_arch"
@@ -38,11 +40,13 @@ function _complete_runQEMU() {
 function _complete_image_manager() {
     local prev_arg=${COMP_WORDS[COMP_CWORD-1]}
     local cur_arg=${COMP_WORDS[COMP_CWORD]}
-    local num_args=$(( $COMP_CWORD + 1 )) # Including the current cursor argument
+    local num_args=${#COMP_WORDS[@]}          # Including the current cursor argument
+    local curr_arg_num=$(( $COMP_CWORD + 1 )) # Including the current cursor argument
     local s_words=("" "${COMP_WORDS[@]}")
     if [[ "${s_words[1]}" == "snippit" ]]; then
         s_words=("${s_words[@]:1}")   # Shift one argument
         num_args=$(( $num_args - 1 )) # Shift one argument
+        curr_arg_num=$(( $curr_arg_num - 1 ))
     fi
     local operation=${s_words[2]}
     local options="-h --help list push pull ls rm mkdir"
@@ -53,18 +57,18 @@ function _complete_image_manager() {
     fi
     case "$operation" in
         "push")
-            [[ $num_args == 3 ]] && COMPREPLY=($(compgen -f "$cur_arg"))
-            [[ $num_args == 4 ]] && COMPREPLY=( $(compgen -W "${snippit_image_list}" -- $cur_arg) )
+            [[ $curr_arg_num == 3 ]] && COMPREPLY=($(compgen -f "$cur_arg"))
+            [[ $curr_arg_num == 4 ]] && COMPREPLY=( $(compgen -W "${snippit_image_list}" -- $cur_arg) )
             ;;
         "pull")
-            [[ $num_args == 3 ]] && COMPREPLY=( $(compgen -W "${snippit_image_list}" -- $cur_arg) )
-            [[ $num_args == 4 ]] && COMPREPLY=($(compgen -f "$cur_arg"))
+            [[ $curr_arg_num == 3 ]] && COMPREPLY=( $(compgen -W "${snippit_image_list}" -- $cur_arg) )
+            [[ $curr_arg_num == 4 ]] && COMPREPLY=($(compgen -f "$cur_arg"))
             ;;
         "ls" | "rm" | "mkdir")
-            [[ $num_args == 3 ]] && COMPREPLY=( $(compgen -W "${snippit_image_list}" -- $cur_arg) )
+            [[ $curr_arg_num == 3 ]] && COMPREPLY=( $(compgen -W "${snippit_image_list}" -- $cur_arg) )
             ;;
         *)
-            [[ $num_args == 2 ]] && COMPREPLY=( $(compgen -W "$options" -- $cur_arg) )
+            [[ $curr_arg_num == 2 ]] && COMPREPLY=( $(compgen -W "$options" -- $cur_arg) )
             ;;
     esac
 }
