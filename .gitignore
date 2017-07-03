@@ -5,3 +5,4 @@ bin/*
 .rootfs_cpio
 .rootfs_e2fs
 .rootfs_mbr
+.rootfs_loops

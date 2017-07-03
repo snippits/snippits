@@ -21,13 +21,18 @@ function _get_image_list() {
 # If we wait too long, when a user change the image and the directory would be wrong image's.
 function timed_user_remove_cpio() {
     sleep 5s
+    mountpoint -q "$1" && return 4;
     [[ -d "$1" ]] && rm -rf "$1" 2> /dev/null
     mkdir -p "$1"
 }
 
+function safe_user_umount() {
+    mountpoint -q "$1" && fusermount -quz "$1" 2> /dev/null
+}
+
 function timed_user_unmount_e2fs() {
     sleep 5s
-    [[ -d "$1" ]] && fusermount -qu "$1" 2> /dev/null
+    safe_user_umount "$1"
 }
 
 function timed_root_unmount_mbr() {
@@ -107,18 +112,16 @@ function user_mount_image() {
         if _check_command ext4fuse || _check_command fusermount; then
             _check_command ext4fuse && _message -r "ext4fuse command not found. No completion can be done."
             _check_command fusermount && _message -r "fusermount command not found. No completion can be done."
-        else
-            # Only mount when both command are available
-            if mountpoint -q "$snippit_e2fs_rootfs_dir"; then
-                # Since previous mount point will be unmount automatically, do not unmount here.
-                # Do nothing if the directory is already mounted
-            else
-                ext4fuse -r "$image_path" "$snippit_e2fs_rootfs_dir" 2> /dev/null
-                err_code=$?
-                [[ $err_code != 0 ]] && _message -r "Error code $err_code presents when using ext4fuse"
-                (timed_user_unmount_e2fs "$snippit_e2fs_rootfs_dir" &)
-            fi
+            return 4;
         fi
+        # Only mount when both command are available
+        # Previous mount point will be unmount automatically. Do not unmount here.
+        mountpoint -q "$snippit_e2fs_rootfs_dir" && return 4;
+
+        ext4fuse "$image_path" "$snippit_e2fs_rootfs_dir" 2> /dev/null
+        err_code=$?
+        [[ $err_code != 0 ]] && _message -r "Error code $err_code presents when using ext4fuse"
+        (timed_user_unmount_e2fs 5s "$snippit_e2fs_rootfs_dir" &)
         ;;
     "MBR")
         # TODO Try make it userlevel
