@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 - (qemu_vpmu) Fix several bugs
+- (qemu_image) Add MBR disk image support
+- (qemu_image) Fix bug when cleaning rootfs might rm all files of last mounted image
 
 ## [0.7.5] - 2017-07-02
 ### Added
