@@ -64,7 +64,6 @@ function mount_mbr() {
 
 function user_extract_cpio() {
     local file_path="$(readlink -f "$1")"
-    snippit_comp_rootfs="$snippit_cpio_rootfs_dir"
     [[ ! -r "$file_path" ]] && exit 4
     mkdir -p "$snippit_cpio_rootfs_dir"
     (
@@ -99,6 +98,7 @@ function user_mount_image() {
 
     case "$image_type" in
     "CPIO")
+        snippit_comp_rootfs="$snippit_cpio_rootfs_dir"
         user_extract_cpio "$image_path"
         ;;
     "EXT2" | "EXT3" | "EXT4")
@@ -121,6 +121,7 @@ function user_mount_image() {
         fi
         ;;
     "MBR")
+        # TODO Try make it userlevel
         snippit_comp_rootfs="$snippit_mbr_rootfs_dir"
         mkdir -p "$snippit_mbr_rootfs_dir"
         mount_mbr "$image_path"
