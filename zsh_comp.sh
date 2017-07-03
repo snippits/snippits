@@ -104,8 +104,9 @@ function user_mount_image() {
     case "$image_type" in
     "CPIO")
         snippit_comp_rootfs="$snippit_cpio_rootfs_dir"
-        user_extract_cpio "$image_path"
+        # Issue the cleaner before the mount event to in case user aborts completion
         (timed_user_remove_cpio 5s "$snippit_cpio_rootfs_dir" &)
+        user_extract_cpio "$image_path"
         ;;
     "EXT2" | "EXT3" | "EXT4")
         snippit_comp_rootfs="$snippit_e2fs_rootfs_dir"
@@ -118,11 +119,12 @@ function user_mount_image() {
         # Only mount when both command are available
         # Previous mount point will be unmount automatically. Do not unmount here.
         mountpoint -q "$snippit_e2fs_rootfs_dir" && return 4;
+        # Issue the cleaner before the mount event to in case user aborts completion
+        (timed_user_unmount_e2fs 5s "$snippit_e2fs_rootfs_dir" &)
 
         ext4fuse "$image_path" "$snippit_e2fs_rootfs_dir" 2> /dev/null
         err_code=$?
         [[ $err_code != 0 ]] && _message -r "Error code $err_code presents when using ext4fuse"
-        (timed_user_unmount_e2fs 5s "$snippit_e2fs_rootfs_dir" &)
         ;;
     "MBR")
         snippit_comp_rootfs="$snippit_mbr_rootfs_dir"
@@ -133,14 +135,15 @@ function user_mount_image() {
             _check_command fusermount && _message -r "fusermount command not found. No completion can be done."
             return 4;
         fi
+        # Previous mount point will be unmount automatically. Do not unmount here.
+        mountpoint -q "$snippit_loops_rootfs_dir" && return 0
+        # Issue the cleaner before the mount event to in case user aborts completion
+        (timed_user_unmount_mbr 5s &)
 
         # Magic here. DO NOT use any read operation (ls/file/etc.) on the mounted mbr folders.
         # That will cause unexpected behaviors to the next ext4fuse mount.
         # Ex: IO errors when completing file paths. Process hangs.
         local partitions=($(get_mbr_partitions "$image_path"))
-
-        # Previous mount point will be unmount automatically. Do not unmount here.
-        mountpoint -q "$snippit_loops_rootfs_dir" && return 0
         # Mount loop devices
         mbrfs "$image_path" "$snippit_loops_rootfs_dir" 2> /dev/null
         # Mount partitions
@@ -150,7 +153,6 @@ function user_mount_image() {
             [[ ! -d "$target_dir" ]] && mkdir -p "$target_dir"
             ! mountpoint -q "$target_dir" && ext4fuse "$loop_dev" "$target_dir" 2> /dev/null
         done
-        (timed_user_unmount_mbr 5s &)
         ;;
     esac
 }
