@@ -6,6 +6,7 @@ snippit_update_flag=0
 
 snippit_cpio_rootfs_dir="$(readlink -f "${SNIPPIT_HOME}/.rootfs_cpio")"
 snippit_e2fs_rootfs_dir="$(readlink -f "${SNIPPIT_HOME}/.rootfs_e2fs")"
+snippit_mbr_rootfs_dir="$(readlink -f "${SNIPPIT_HOME}/.rootfs_mbr")"
 snippit_comp_rootfs=""
 
 function _get_image_list() {
@@ -27,6 +28,38 @@ function timed_user_remove_cpio() {
 function timed_user_unmount_e2fs() {
     sleep 5s
     [[ -d "$1" ]] && fusermount -qu "$1" 2> /dev/null
+}
+
+function timed_root_unmount_mbr() {
+    sleep 3s
+    local partition_folders=("$(ls "$1")")
+    for p in "${partition_folders[@]}"; do
+        [[ -d "$1/$p" ]] && mountpoint -q "$1/$p" && sudo umount "$1/$p"
+    done
+}
+
+function mount_mbr() {
+    local image_path="$1"
+    local readonly_flag="$2"
+    local sector_size=$(fdisk -l "$image_path" | grep "Sector size" | sed -e "s/.*://g" | sed -e "s/bytes.*//g")
+    local partitions=("$(fdisk -l "$image_path" | grep "Linux" | grep -v "swap")")
+    local p_name=(p1 p2 p3 p4 p5 p6 p7 p8 p9 p10 p11 p12 p13 p14 p15 p16)
+
+    local index=0
+    for p in "${partitions[@]}"; do
+        index=$(( $index + 1 ))
+        # Use awk instead of cut to handle multiple spaces
+        local sector_start=$(echo "$p" | awk '{print $3}')
+        local offset=$(( ${sector_start} * $sector_size ))
+        local flags="ro,loop,offset=$offset"
+
+        mkdir -p "$snippit_mbr_rootfs_dir/${p_name[$index]}"
+        if mountpoint -q "$snippit_mbr_rootfs_dir/${p_name[$index]}"; then
+            # Do nothing when it is already mounted
+        else
+            sudo mount -o "$flags" "$image_path" "$snippit_mbr_rootfs_dir/${p_name[$index]}"
+        fi
+    done
 }
 
 function user_extract_cpio() {
@@ -88,7 +121,10 @@ function user_mount_image() {
         fi
         ;;
     "MBR")
-        return 4
+        snippit_comp_rootfs="$snippit_mbr_rootfs_dir"
+        mkdir -p "$snippit_mbr_rootfs_dir"
+        mount_mbr "$image_path"
+        (timed_root_unmount_mbr "$snippit_mbr_rootfs_dir" &)
         ;;
     esac
 }
