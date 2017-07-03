@@ -7,6 +7,7 @@ snippit_update_flag=0
 snippit_cpio_rootfs_dir="$(readlink -f "${SNIPPIT_HOME}/.rootfs_cpio")"
 snippit_e2fs_rootfs_dir="$(readlink -f "${SNIPPIT_HOME}/.rootfs_e2fs")"
 snippit_mbr_rootfs_dir="$(readlink -f "${SNIPPIT_HOME}/.rootfs_mbr")"
+snippit_loops_rootfs_dir="$(readlink -f "${SNIPPIT_HOME}/.rootfs_loops")"
 snippit_comp_rootfs=""
 
 function _get_image_list() {
@@ -20,51 +21,33 @@ function _get_image_list() {
 # Timeout in 5s. This value cannot be too long in order to ensure the mounted dir is latest completion.
 # If we wait too long, when a user change the image and the directory would be wrong image's.
 function timed_user_remove_cpio() {
-    sleep 5s
+    sleep $1
+    # Never remove cpio folder when it is somehow mounted by others
     mountpoint -q "$1" && return 4;
-    [[ -d "$1" ]] && rm -rf "$1" 2> /dev/null
-    mkdir -p "$1"
+    [[ -d "$1" ]] && rm -rf "$2" 2> /dev/null
+    mkdir -p "$2"
 }
 
 function safe_user_umount() {
-    mountpoint -q "$1" && fusermount -quz "$1" 2> /dev/null
+    mountpoint -q "$1" && fusermount -qu "$1" 2> /dev/null
 }
 
 function timed_user_unmount_e2fs() {
-    sleep 5s
-    safe_user_umount "$1"
+    sleep $1
+    safe_user_umount "$2"
 }
 
-function timed_root_unmount_mbr() {
-    sleep 3s
-    local partition_folders=("$(ls "$1")")
+function timed_user_unmount_mbr() {
+    sleep $1
+    local partition_folders=($(ls "$snippit_mbr_rootfs_dir"))
     for p in "${partition_folders[@]}"; do
-        [[ -d "$1/$p" ]] && mountpoint -q "$1/$p" && sudo umount "$1/$p"
-    done
-}
-
-function mount_mbr() {
-    local image_path="$1"
-    local readonly_flag="$2"
-    local sector_size=$(fdisk -l "$image_path" | grep "Sector size" | sed -e "s/.*://g" | sed -e "s/bytes.*//g")
-    local partitions=("$(fdisk -l "$image_path" | grep "Linux" | grep -v "swap")")
-    local p_name=(p1 p2 p3 p4 p5 p6 p7 p8 p9 p10 p11 p12 p13 p14 p15 p16)
-
-    local index=0
-    for p in "${partitions[@]}"; do
-        index=$(( $index + 1 ))
-        # Use awk instead of cut to handle multiple spaces
-        local sector_start=$(echo "$p" | awk '{print $3}')
-        local offset=$(( ${sector_start} * $sector_size ))
-        local flags="ro,loop,offset=$offset"
-
-        mkdir -p "$snippit_mbr_rootfs_dir/${p_name[$index]}"
-        if mountpoint -q "$snippit_mbr_rootfs_dir/${p_name[$index]}"; then
-            # Do nothing when it is already mounted
-        else
-            sudo mount -o "$flags" "$image_path" "$snippit_mbr_rootfs_dir/${p_name[$index]}"
+        safe_user_umount "${snippit_mbr_rootfs_dir}/${p}"
+        if ! mountpoint -q "${snippit_mbr_rootfs_dir}/${p}"; then
+            rmdir "${snippit_mbr_rootfs_dir}/${p}" 2> /dev/null
         fi
     done
+    # Unmount loop devices (MBR)
+    safe_user_umount "$snippit_loops_rootfs_dir"
 }
 
 function user_extract_cpio() {
@@ -77,7 +60,6 @@ function user_extract_cpio() {
         # Do the dangerous operation only when the current directory is correct for safety
         if [[ "$(pwd)" == "$snippit_cpio_rootfs_dir" ]]; then
             cpio -idu --quiet < "$file_path" 2> /dev/null
-            (timed_user_remove_cpio "$snippit_cpio_rootfs_dir" &)
         fi
     )
 }
@@ -90,6 +72,24 @@ function _check_command() {
     else
         return 1 # Found
     fi
+}
+
+function get_mbr_partitions() {
+    local image_path="$1"
+    local partitions=("${(@f)$(fdisk -l "$image_path" | grep -v -e "Disk.*sectors" | grep "$1")}")
+    local index=1
+
+    for p in "${partitions[@]}"; do
+        local type_dont_count_flag="$(echo "$p" | grep -e "5 *Extended")"
+        local type_skip_flag="$(echo "$p" | grep -e "82 *Linux swap")"
+        # Skip un-mountable partitions
+        [[ "$type_dont_count_flag" != "" ]] && continue
+        if [[ "$type_skip_flag" != "" ]]; then
+            index=$(( $index + 1 ))
+        else
+            echo "$index"
+        fi
+    done
 }
 
 function user_mount_image() {
@@ -105,6 +105,7 @@ function user_mount_image() {
     "CPIO")
         snippit_comp_rootfs="$snippit_cpio_rootfs_dir"
         user_extract_cpio "$image_path"
+        (timed_user_remove_cpio 5s "$snippit_cpio_rootfs_dir" &)
         ;;
     "EXT2" | "EXT3" | "EXT4")
         snippit_comp_rootfs="$snippit_e2fs_rootfs_dir"
@@ -124,11 +125,32 @@ function user_mount_image() {
         (timed_user_unmount_e2fs 5s "$snippit_e2fs_rootfs_dir" &)
         ;;
     "MBR")
-        # TODO Try make it userlevel
         snippit_comp_rootfs="$snippit_mbr_rootfs_dir"
-        mkdir -p "$snippit_mbr_rootfs_dir"
-        mount_mbr "$image_path"
-        (timed_root_unmount_mbr "$snippit_mbr_rootfs_dir" &)
+        mkdir -p "$snippit_mbr_rootfs_dir" "$snippit_loops_rootfs_dir"
+        if _check_command ext4fuse || _check_command fusermount || _check_command mbrfs; then
+            _check_command mbrfs && _message -r "mbrfs command not found. No completion can be done."
+            _check_command ext4fuse && _message -r "ext4fuse command not found. No completion can be done."
+            _check_command fusermount && _message -r "fusermount command not found. No completion can be done."
+            return 4;
+        fi
+
+        # Magic here. DO NOT use any read operation (ls/file/etc.) on the mounted mbr folders.
+        # That will cause unexpected behaviors to the next ext4fuse mount.
+        # Ex: IO errors when completing file paths. Process hangs.
+        local partitions=($(get_mbr_partitions "$image_path"))
+
+        # Previous mount point will be unmount automatically. Do not unmount here.
+        mountpoint -q "$snippit_loops_rootfs_dir" && return 0
+        # Mount loop devices
+        mbrfs "$image_path" "$snippit_loops_rootfs_dir" 2> /dev/null
+        # Mount partitions
+        for p in "${partitions[@]}"; do
+            local loop_dev="${snippit_loops_rootfs_dir}/${p}"
+            local target_dir="${snippit_mbr_rootfs_dir}/p${p}"
+            [[ ! -d "$target_dir" ]] && mkdir -p "$target_dir"
+            ! mountpoint -q "$target_dir" && ext4fuse "$loop_dev" "$target_dir" 2> /dev/null
+        done
+        (timed_user_unmount_mbr 5s &)
         ;;
     esac
 }

@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 - (snippits) Add open source projects for supporting user-level mount (fuse)
 - (snippits) Add mbrfuse and ext4fuse binary
-- (snippits) Add MBR support on path completion
+- (snippits) Add MBR support on path completion (user level)
 - (qemu_vpmu) Fix several bugs
 - (qemu_image) Add MBR disk image support
 - (qemu_image) Fix bug when cleaning rootfs might rm all files of last mounted image
