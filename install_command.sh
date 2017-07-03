@@ -8,6 +8,7 @@ elif [[ -n "$BASH_VERSION" ]]; then
     source "${SNIPPIT_HOME}/bash_comp.sh"
 fi
 export RUN_QEMU_SCRIPT_PATH="${SNIPPIT_HOME}/qemu_image"
+export PATH="${SNIPPIT_HOME}/bin":$PATH
 echo "Installed shell function - snippit. The completion of all scripts and snippit command are now available."
 echo "\$SNIPPIT_HOME=${SNIPPIT_HOME}"
 

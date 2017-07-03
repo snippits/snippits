@@ -1,5 +1,7 @@
 demo
+bin/*
 
 # Temporary directory for completion systems
 .rootfs_cpio
 .rootfs_e2fs
+.rootfs_mbr
