@@ -131,9 +131,26 @@ function test_binary_dep() {
             "arm-linux-gnueabi-gcc is not found in \$PATH.\n" \
             "  Please download it and set in the \$PATH" \
             "${NC}\n"
-        echo "Please download Linaro ARM gcc from here:"
-        echo "https://releases.linaro.org/components/toolchain/binaries/4.9-2017.01/arm-linux-gnueabi/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi.tar.xz"
-        exit 1
+
+        if [[ $(ask_response "Download Linaro ARM compiler to ./external? (y/n)" "n") == "y" ]]; then
+            local file_path="${SCRIPT_DIR}/external/gcc-linaro-4.9-gnueabi.tar.xz"
+            local dir_path="${file_path%%.tar*}"
+            local link="https://releases.linaro.org/components/toolchain/binaries/4.9-2017.01/arm-linux-gnueabi/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi.tar.xz"
+
+            [[ ! -f "$file_path" ]] && wget "$link" -O "$file_path"
+            mkdir -p "$dir_path"
+            echo -e "${COLOR_GREEN}decompress file $file_path${NC}"
+            tar -xf "$file_path" -C "$dir_path" --strip-components 1
+            echo -e "${COLOR_YELLOW}Please copy and paste the following line to your ~/.bashrc or ~/.zshrc${NC}"
+            echo "export PATH=\$PATH:${dir_path}/bin"
+            echo -e "\n\n"
+            # Make it temporary work for this script.
+            export PATH=${dir_path}/bin:$PATH
+        else
+            echo "Linaro ARM gcc can be found here. Please downlaod it and add it to the \$PATH."
+            echo "https://releases.linaro.org/components/toolchain/binaries/4.9-2017.01/arm-linux-gnueabi/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi.tar.xz"
+            exit 1
+        fi
     fi
 }
 

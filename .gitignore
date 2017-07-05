@@ -1,6 +1,9 @@
 demo
 bin/*
 
+# ARM compiler
+external/gcc-linaro-*
+
 # Temporary directory for completion systems
 .rootfs_cpio
 .rootfs_e2fs
