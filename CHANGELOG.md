@@ -2,13 +2,22 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+
+
+## [0.7.6] - 2017-07-05
+### Added
 - (snippits) Add open source projects for supporting user-level mount (fuse)
-- (snippits) Add mbrfuse and ext4fuse binary
-- (snippits) Add MBR support on path completion (user level)
+- (snippits) Add mbrfuse and ext4fuse projects
+- (snippits) Add MBR support on path completion (zsh only)
+- (snippits) Try to download ARM compiler in prepare.sh
+- (qemu_image) Add MBR disk image support
+
+### Changed
 - (snippits) Fix umount bug if user aborts completion
 - (qemu_vpmu) Fix several bugs
-- (qemu_image) Add MBR disk image support
 - (qemu_image) Fix bug when cleaning rootfs might rm all files of last mounted image
+- (qemu_image) Mount as readonly when write permission is not needed
+
 
 ## [0.7.5] - 2017-07-02
 ### Added
