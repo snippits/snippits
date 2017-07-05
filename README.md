@@ -1,6 +1,14 @@
 # Snippit
 This is the main repo of snippit, containing various of tools and repos. Please use this to make sure the versions of all submodules are in consistent.
 
+# Quick Start Demo
+1. Run `./prepare.sh` to set up the working environment.
+2. Run `source ./install_command.sh` to get snippit command and completions
+3. Run `./demo.sh` to run a demo of snippit
+4. Open browser and enter URL [http://0.0.0.0:8000/](http://0.0.0.0:8000/)
+
+![Image of Snippit](https://github.com/snippits/snippit_ui/blob/master/images/snippit.png?raw=true "Sample Image")
+
 # Change Log
 ## Features of 0.7
 1. Upgrade to QEMU 2.9
@@ -23,12 +31,6 @@ This is the main repo of snippit, containing various of tools and repos. Please 
 * [Highly recommand] clang/clang++ LLVM
 * ARM cross compiler gcc/g++ version >= 4.8 [linaro gcc 4.9](https://releases.linaro.org/components/toolchain/binaries/4.9-2017.01/arm-linux-gnueabi/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi.tar.xz).
 * Beta version supports only ARM target system. x86 would be supported in the future.
-
-# Quick Start Demo
-1. Run `./prepare.sh` to set up the working environment.
-2. Run `source ./install_command.sh` to get snippit command and completions
-3. Run `./demo.sh` to run a demo of snippit
-4. Open browser and enter URL [http://0.0.0.0:8000/](http://0.0.0.0:8000/)
 
 # Snippit command
 The __snippit command__ can be executed at any working directory. The command leads
@@ -59,14 +61,15 @@ The `install_command.sh` support completions for all main scripts and `snippit` 
 
 In addition, the completion in __zsh__ perform much better and provide full support in image sub-command, i.e. path completion for target image(ext2, ext3, ext4, cpio).
 
-## e2fs filesystem support
-Please install `fusermount` and `ext4fuse` commands for e2fs filesystem completion support.
-The completion system is built on user level with read-only permission, which means it's safe.
-If you cannot find `ext4fuse` in your package manager, please refer to [gerard/ext4fuse](https://github.com/gerard/ext4fuse).
+## Completion for Disk Images
+Please install `fusermount` and `fuse` libraries in order to have completion for paths in disk images.
+The completion system supports __e2fs__ (ext2, ext3, ext4) and images with MBR partition table. (currently zsh only)
+For example: when typing \<TAB\> in `snippit image ls rootfs@/`, the images will be mounted in user mode and the possible paths will be shown for file path completion.
 
 # License
 1. __qemu_vpmu__ is released under GNU Library General Public License, version 2.0
 2. __qemu_image__ is released under MIT License
 3. __vpmu_controller__ is released under MIT License
 4. __snippit_ui__ is released under MIT License
+5. __external__: Please refer to the licenses in each directories.
 
