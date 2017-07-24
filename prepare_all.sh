@@ -73,8 +73,8 @@ function prepare_qemu_image() {
     [[ $? != 0 ]] && print_message_and_exit "Download pre-built image"
     arm-linux-gnueabi-gcc -g ./matrix_mul.c -o ./matrix
     [[ $? != 0 ]] && print_message_and_exit "arm-linux-gnueabi-gcc"
-    ../image_manager.sh push ./matrix rootfs.cpio@/root/test_set/
-    [[ $? != 0 ]] && print_message_and_exit "./image_manager.sh push"
+    ../local_image_manager.sh push ./matrix rootfs.cpio@/root/test_set/
+    [[ $? != 0 ]] && print_message_and_exit "./local_image_manager.sh push"
 }
 
 function prepare_vpmu_controller() {

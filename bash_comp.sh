@@ -4,7 +4,7 @@
 snippit_image_list=""
 snippit_update_flag=0
 function _get_image_list() {
-    local res=$($RUN_QEMU_SCRIPT_PATH/image_manager.sh list | sed 1,1d | awk '{print $1}')
+    local res=$($RUN_QEMU_SCRIPT_PATH/local_image_manager.sh list | sed 1,1d | awk '{print $1}')
     res=($res) # Convert to array
     for f in "${res[@]}"; do
         echo "${f}@/"
@@ -92,5 +92,5 @@ function _complete_snippit() {
 
 complete -F _complete_snippit snippit
 complete -F _complete_runQEMU runQEMU.sh
-complete -F _complete_image_manager image_manager.sh
+complete -F _complete_image_manager local_image_manager.sh
 

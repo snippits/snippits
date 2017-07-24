@@ -11,7 +11,7 @@ snippit_loops_rootfs_dir="$(readlink -f "${SNIPPIT_HOME}/.rootfs_loops")"
 snippit_comp_rootfs=""
 
 function _get_image_list() {
-    local res=$($RUN_QEMU_SCRIPT_PATH/image_manager.sh list | sed 1,1d | awk '{print $1}')
+    local res=$($RUN_QEMU_SCRIPT_PATH/local_image_manager.sh list | sed 1,1d | awk '{print $1}')
     res=($res) # Convert to array
     for f in "${res[@]}"; do
         echo $f
@@ -93,7 +93,7 @@ function get_mbr_partitions() {
 }
 
 function user_mount_image() {
-    local tmp=($($RUN_QEMU_SCRIPT_PATH/image_manager.sh query image_path_and_type "$1"))
+    local tmp=($($RUN_QEMU_SCRIPT_PATH/local_image_manager.sh query image_path_and_type "$1"))
     local image_path="${tmp[1]}"
     local image_type="${tmp[2]}"
     local duration=$3
@@ -293,6 +293,6 @@ function _complete_snippit() {
 
 compdef _complete_snippit snippit
 compdef _complete_runQEMU runQEMU.sh
-compdef _complete_image_manager image_manager.sh
+compdef _complete_image_manager local_image_manager.sh
 autoload colors && colors
 
