@@ -50,6 +50,7 @@ function prepare_qemu_vpmu() {
     mkdir -p "$SCRIPT_DIR/qemu_vpmu/build"
     cd "$SCRIPT_DIR/qemu_vpmu/build"
     if [[ ! -f ./config-host.mak ]]; then
+        local enable_vpmu_debug=$(ask_response "Enable QEMU VPMU debug message? (y/n)" "n")
         # Only do configure when it is the first time executing this
         if [[ "$enable_vpmu_debug" == "n" ]]; then
             echo "VPMU debug option is off"
@@ -153,9 +154,6 @@ function test_binary_dep() {
         fi
     fi
 }
-
-# Configurable variables
-enable_vpmu_debug=$(ask_response "Enable QEMU VPMU debug message? (y/n)" "n")
 
 test_binary_dep
 init_git
