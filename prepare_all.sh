@@ -40,7 +40,7 @@ function print_message_and_exit() {
 function init_git(){
     cd "$SCRIPT_DIR"
     # Shallow clone to save time
-    git submodule update --init --depth 10 qemu_vpmu qemu_image snippit_ui vpmu_controller
+    git submodule update --init --depth 10
     [[ $? != 0 ]] && print_message_and_exit "git submodule"
 }
 
