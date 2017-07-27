@@ -3,6 +3,47 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+fix tty bug
+
+## [0.8.0] - 2017-07-27
+### Added
+- (qemu_vpmu) Add MProtect and MUnmap kernel symbols
+- (qemu_vpmu @ 15b5155) Complete user process function tracking and callbacks
+- (qemu_vpmu) Add new function-map.hpp to provide callback function interface
+- (qemu_vpmu) Add process memory map and trace the caller of mmap in user process
+- (qemu_vpmu) Add VPMU_CFLAGS and CXXFLAGS in config-host.mak for customizations
+- (qemu_vpmu) Replace CodeRange by the new class, Pair_beg_end, which is simpler
+- (qemu_vpmu) Add several minor features
+- (qemu_vpmu) Able to trace a script with all executables run by the script
+- (qemu_image) Solve serial terminal problems of column width and special chars
+- (qemu_image) Update image to version 3
+- (qemu_image) Install more default binaries and libraries in x86_busybox image
+- (vpmu_controller) Add new vpmu-perf command for easier and better control
+- (vpmu_controller) Add support (parser) for profiling a script
+- (vpmu_controller) Add ELF parser to identify static/dynamic linked info.
+- (vpmu_controller) Add struct VPMUBinary for storing binary object info.
+- (vpmu_controller) Update minor features
+
+### Changed
+- (snippits) Fix the order of arguments in Makefile in external/mbrfs
+- (snippits) Ask VPMU debug config only when config does not set
+- (qemu_vpmu) Make x86 CPU run on VPMU world clock
+- (qemu_vpmu) Refactor MMAP to ET_Region and complete the tracing
+- (qemu_vpmu) Refactor all event tracing interfaces and codes
+- (qemu_vpmu) Refactor ET_Process and ET_Program
+- (qemu_vpmu) Refactor string/file functions in vpmu::utils to vpmu::str and vpmu::file
+- (qemu_vpmu) Fix wrong calling convention on x86 4th argument
+- (qemu_vpmu) Fix several bugs
+- (qemu_vpmu @ bc9ef91) Fix walk count number and line mapping on x86
+- (qemu_vpmu) Fix YCM config
+- (qemu_vpmu) Rewrite walk count functions for each mapped memory region
+- (qemu_vpmu @ 6758ff1) Keep the consistency of #ifndef of headers and add #pragma once for speed
+- (qemu_image) Fix `mount -o ro` fail when dirty log exists in the disk image
+- (qemu_image) Rename image_manager.sh -> local_image_manager.sh to make a distinction from images folder
+- (vpmu_controller) Refactor/clean the codes (heavely)
+- (vpmu_controller) Fix bugs of "../" relative path and "not found" libraries
+- (vpmu_controller) Solve the real path and symbolic link problem
+- (vpmu_controller) several bugs fixed
 
 ## [0.7.6] - 2017-07-05
 ### Added

@@ -10,6 +10,20 @@ This is the main repo of snippit, containing various of tools and repos. Please 
 ![Image of Snippit](https://github.com/snippits/snippit_ui/blob/master/images/snippit.png?raw=true "Sample Image")
 
 # Change Log
+## Features of 0.8
+1. Full support of process virtual memory tracing, i.e. mmap
+2. __FBT__ (Function Boundary Tracing) callbacks (Similar to DTrace but in hard code)
+3. Add more features to support SMP profiling with multiple processes
+4. Able to trace a script with all commands executed by the script
+5. __Better, stronger, cleaner__ codes of event tracing functionalities
+6. Better default terminal configurations, support special keys and full window width text
+7. More default binaries and libraries in x86_busybox image
+8. Brand new `vpmu-perf` command for easier and better control in command line
+9. Add mbrfuse and ext4fuse projects as external tools
+10. Able to complete the path in the image when using `snippit image` command
+11. Many bugs fixed
+12. Add sha256sums checks for downloaded pre-built images
+
 ## Features of 0.7
 1. Upgrade to QEMU 2.9
 2. Multi-core emulation support (timing and phases are still in progress)
@@ -23,8 +37,7 @@ This is the main repo of snippit, containing various of tools and repos. Please 
 2. Robust phase detection for general program
 3. Phase bottleneck analysis
 4. Heterogeneous-friendliness prediction
-5. FBT (Function Boundary Tracing) callbacks (Similar to DTrace)
-6. TBA
+5. TBA
 
 # Important Requirements
 * gcc/g++ version >= __4.9__
