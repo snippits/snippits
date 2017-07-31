@@ -3,7 +3,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-fix tty bug
+## [0.8.1] - 2017-07-31
+### Changed
+- (snippits) Fix of submodule
 
 ## [0.8.0] - 2017-07-27
 ### Added

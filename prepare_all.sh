@@ -93,16 +93,13 @@ function prepare_snippit_ui() {
 function prepare_snippit_external() {
     echo -e "#    ${COLOR_GREEN}Prepare external tools${NC}"
 
-    cd "$SCRIPT_DIR"
     if check_command mbrfs; then
-        git submodule update --init --depth 10 external/mbrfs
         cd "$SCRIPT_DIR/external/mbrfs"
         make
         [[ $? != 0 ]] && print_message_and_exit "make external/mbrfs"
         cp "$SCRIPT_DIR/external/mbrfs/mbrfs" "$SCRIPT_DIR/bin"
     fi
     if check_command ext4fuse; then
-        git submodule update --init --depth 10 external/ext4fuse
         cd "$SCRIPT_DIR/external/ext4fuse"
         make
         [[ $? != 0 ]] && print_message_and_exit "make external/ext4fuse"
