@@ -15,6 +15,6 @@ cd "$SCRIPT_DIR"
 
 # Show in browser
 cd "$SCRIPT_DIR/snippit_ui/public"
-echo "Please open your browser and enter the following URL"
+echo -e "${COLOR_GREEN}Please open your browser and enter the following URL${NC}"
 python3 -m http.server
 

@@ -5,7 +5,12 @@ All notable changes to this project will be documented in this file.
 
 ## [0.8.1] - 2017-07-31
 ### Changed
+- (qemu_vpmu) Refactor API of template output and add new file dump
+- (qemu_vpmu) Show all mapped memory region in vm_maps
+- (qemu_vpmu) Fix wrong PC address on ARM function callback registration
 - (snippits) Fix of submodule
+- (snippits) Update the demo.sh
+- (snippit_ui) Fix parse.py for files without line number
 
 ## [0.8.0] - 2017-07-27
 ### Added
