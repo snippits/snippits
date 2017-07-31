@@ -114,6 +114,12 @@ function test_binary_dep() {
         check_command "$c" && echo -e "Required command ${COLOR_RED}${c}${NC} not found"
     done
 
+    if check_command expect; then # Not found
+        echo -e "${COLOR_RED}" \
+            "Binary 'expect' is not found. Please install it with your package manager." \
+            "${NC}\n"
+    fi
+
     if check_command clang++ || check_command clang; then # Not found
         echo -e "${COLOR_YELLOW}" \
             "[OPTIONAL] " \
