@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+- (qemu_image) Solve the bug of remaining character of expect script
+- (qemu_vpmu) Support per-core profiling counter snapshot
+- (qemu_vpmu) Support per-process profiling counter collection
+- (qemu_vpmu) Fix several bugs
 
 ## [0.8.1] - 2017-07-31
 ### Changed
