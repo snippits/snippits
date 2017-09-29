@@ -1,11 +1,14 @@
-# Changelog
-All notable changes to this project will be documented in this file.
-
 ## [Unreleased]
 - (qemu_image) Solve the bug of remaining character of expect script
 - (qemu_vpmu) Support per-core profiling counter snapshot
 - (qemu_vpmu) Support per-process profiling counter collection
+- (qemu_vpmu) Add extra local buffers for GPU
+- (qemu_vpmu) Rename/Add the series of vpmu::host::get_timestamp_ns/_us/_ms
 - (qemu_vpmu) Fix several bugs
+- (vpmu_controller) Fix undefined copy_to_user() in newer kernel headers
+- (snippits) Update to new API format of image management to completion system
+- (snippits) Add image path completion on bash shell (kinda work)
+- (snippits) Add `comp_helper.sh` for image path completion codes
 
 ## [0.8.1] - 2017-07-31
 ### Changed
