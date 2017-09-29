@@ -23,7 +23,10 @@ function _complete_runQEMU() {
         curr_arg_num=$(( $curr_arg_num - 1 ))
     fi
     local options="-h --help -g -gg -o -net -smp -m -snapshot -enable-kvm -drive"
-    local images="arch vexpress debian x86_busybox x86_arch"
+    if [[ $snippit_update_flag == 0 ]]; then
+        snippit_update_flag=1
+        snippit_image_list=$(_get_image_list)
+    fi
 
     case "$prev_arg" in
         "-smp" | "-m")
@@ -32,7 +35,11 @@ function _complete_runQEMU() {
             COMPREPLY=($(compgen -f "$cur_arg"))
             ;;
         *)
-            COMPREPLY=( $(compgen -W "$options $images"  -- $cur_arg) )
+            if [[ $curr_arg_num == 2 ]]; then
+                COMPREPLY=( $(compgen -W "${snippit_image_list}" -- $cur_arg) )
+            else
+                COMPREPLY=( $(compgen -W "$options $images"  -- $cur_arg) )
+            fi
             ;;
     esac
 }

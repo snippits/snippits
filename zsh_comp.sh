@@ -179,12 +179,10 @@ function _complete_runQEMU() {
         '-enable-kvm:Enable KVM' \
         '-drive:Hook another disk image to guest' \
         )
-    local images=('vexpress:Run Vexpress Image (ARM)' \
-        'arch:Run Arch Linux Image (ARM)' \
-        'debian:Run Debian Linux Image (ARM)' \
-        'x86_busybox:Run x86 image (x86)' \
-        'x86_arch:Run arch image (x86)' \
-        )
+    if [[ $snippit_update_flag == 0 ]]; then
+        snippit_update_flag=1
+        snippit_image_list=$(_get_image_list)
+    fi
 
     case "$prev_arg" in
         "-o")
@@ -197,14 +195,22 @@ function _complete_runQEMU() {
             # Do no completion here
             ;;
         *)
-            _describe -V 'values' options
-            _describe -V 'values' images
+            if [[ $curr_arg_num == 2 ]]; then
+                _sep_parts "($snippit_image_list)"
+            else
+                _describe -V 'values' options
+            fi
             ;;
     esac
 }
 
 function _complete_image_and_path() {
     local cur_arg=$words[${#words[@]}]
+
+    if [[ $snippit_update_flag == 0 ]]; then
+        snippit_update_flag=1
+        snippit_image_list=$(_get_image_list)
+    fi
 
     if [[ "$cur_arg" != *"@"* ]]; then
         # Complete image when typing before @
@@ -245,10 +251,6 @@ function _complete_image_manager() {
         'mkdir:Make a folder in image' \
         )
 
-    if [[ $snippit_update_flag == 0 ]]; then
-        snippit_update_flag=1
-        snippit_image_list=$(_get_image_list)
-    fi
     case "$operation" in
         "push")
             [[ $curr_arg_num == 3 ]] &&  _alternative 'files:filenames:_files'
