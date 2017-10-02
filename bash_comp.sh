@@ -67,7 +67,6 @@ function _complete_image_manager_path() {
 
     image_list="$snippit_image_list";
 
-    compopt -o nospace
     if [[ "$cur" == *@/* ]]; then
         # Complete path when typing after @
         local image_name=${cur%%@/*}
@@ -104,14 +103,17 @@ function _complete_image_manager() {
 
     case "$operation" in
         "push")
+            compopt -o nospace
             [[ $curr_arg_num == 3 ]] && COMPREPLY=($(compgen -f "$cur_arg"))
             [[ $curr_arg_num == 4 ]] && _complete_image_manager_path
             ;;
         "pull")
+            compopt -o nospace
             [[ $curr_arg_num == 3 ]] && _complete_image_manager_path
             [[ $curr_arg_num == 4 ]] && COMPREPLY=($(compgen -f "$cur_arg"))
             ;;
         "ls" | "rm" | "mkdir")
+            compopt -o nospace
             [[ $curr_arg_num == 3 ]] && _complete_image_manager_path
             ;;
         *)
