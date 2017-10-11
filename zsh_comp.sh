@@ -27,6 +27,9 @@ function _complete_runQEMU() {
         '-snapshot:Run with read only guest image' \
         '-enable-kvm:Enable KVM' \
         '-drive:Hook another disk image to guest' \
+        '-vpmu-console:Specify the output file for VPMU console output (default stderr)' \
+        '-mem-path:Use file to allocate guest memory (ex: -mem-path /dev/hugepages)' \
+        '-trace:Use QEMU trace API with specified events' \
         )
     if [[ $snippit_update_flag == 0 ]]; then
         snippit_update_flag=1
@@ -37,7 +40,7 @@ function _complete_runQEMU() {
         "-o")
             _alternative 'files:filenames:_directories'
             ;;
-        "-drive")
+        "-drive" | "-vpmu-console" | "-mem-path")
             _alternative 'files:filenames:_files'
             ;;
         "-m" | "-smp")

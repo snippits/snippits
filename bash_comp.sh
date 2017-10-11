@@ -17,7 +17,7 @@ function _complete_runQEMU() {
         num_args=$(( $num_args - 1 )) # Shift one argument
         curr_arg_num=$(( $curr_arg_num - 1 ))
     fi
-    local options="-h --help -g -gg -o -net -smp -m -snapshot -enable-kvm -drive"
+    local options="-h --help -g -gg -o -net -smp -m -snapshot -enable-kvm -drive -vpmu-console -mem-path -trace"
     if [[ $snippit_update_flag == 0 ]]; then
         snippit_update_flag=1
         snippit_image_list=$(_get_image_list)
@@ -26,7 +26,7 @@ function _complete_runQEMU() {
     case "$prev_arg" in
         "-smp" | "-m")
             ;;
-        "-o" | "-drive")
+        "-o" | "-drive" | "-vpmu-console" | "-mem-path")
             COMPREPLY=($(compgen -f "$cur_arg"))
             ;;
         *)
