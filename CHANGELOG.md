@@ -1,14 +1,27 @@
 ## [Unreleased]
+
+## [0.8.2] - 2017-10-11
+### Added
+- (qemu_vpmu) Add extra local buffers for GPU
+- (qemu_vpmu) Add new RingBuffer implementation in C++14 style
+- (qemu_vpmu) Add new async callback interface and fix all previous sync issues
+- (snippits) Add image path completion on bash shell (kinda work)
+- (snippits) Add `comp_helper.sh` for image path completion codes
+- (snippits) Add tmux monitor UI interface
+
+### Changed
 - (qemu_image) Solve the bug of remaining character of expect script
+- (qemu_image) New script and image management system
+- (qemu_vpmu) Upgrade to QEMU 2.10.1
 - (qemu_vpmu) Support per-core profiling counter snapshot
 - (qemu_vpmu) Support per-process profiling counter collection
-- (qemu_vpmu) Add extra local buffers for GPU
 - (qemu_vpmu) Rename/Add the series of vpmu::host::get_timestamp_ns/_us/_ms
+- (qemu_vpmu) Remove machine specific VPMU device hook. Enabled on all machines
+- (qemu_vpmu) Enable tracing of unmap for current regions with full map output
+- (qemu_vpmu) Refactor the VPMU stream interface
 - (qemu_vpmu) Fix several bugs
 - (vpmu_controller) Fix undefined copy_to_user() in newer kernel headers
 - (snippits) Update to new API format of image management to completion system
-- (snippits) Add image path completion on bash shell (kinda work)
-- (snippits) Add `comp_helper.sh` for image path completion codes
 
 ## [0.8.1] - 2017-07-31
 ### Changed
