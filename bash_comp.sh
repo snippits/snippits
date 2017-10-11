@@ -124,7 +124,7 @@ function _complete_image_manager() {
 
 function _complete_snippit() {
     local cur_arg=${COMP_WORDS[COMP_CWORD]}
-    local options="qemu image"
+    local options="qemu image tmux"
 
     case "${COMP_WORDS[1]}" in
         "qemu")
@@ -132,6 +132,8 @@ function _complete_snippit() {
             ;;
         "image")
             _complete_image_manager
+            ;;
+        "tmux")
             ;;
         *)
             COMPREPLY=( $(compgen -W "${options}" -- ${cur_arg}) )

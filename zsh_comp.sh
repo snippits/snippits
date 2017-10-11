@@ -128,6 +128,7 @@ function _complete_image_manager() {
 function _complete_snippit() {
     local options=('qemu:Run QEMU emulation' \
         'image:Manipulate guest images' \
+        'tmux:Startup a tmux UI with preset panes/windows' \
         )
 
     case "${words[2]}" in
@@ -138,6 +139,8 @@ function _complete_snippit() {
             _complete_image_manager
             ;;
         "phase")
+            ;;
+        "tmux")
             ;;
         *)
             _describe -V 'values' options

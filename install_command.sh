@@ -26,6 +26,10 @@ function snippit() {
         image)
             $RUN_QEMU_SCRIPT_PATH/local_image_manager.sh $@
             ;;
+        tmux)
+            cd "${SNIPPIT_HOME}"
+            tmuxinator local
+            ;;
     esac
 }
 
