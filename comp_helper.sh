@@ -82,10 +82,9 @@ function get_mbr_partitions() {
         local type_skip_flag="$(echo "$p" | grep -e "82 *Linux swap")"
         # Skip un-mountable partitions
         [[ "$type_dont_count_flag" != "" ]] && continue
-        if [[ "$type_skip_flag" != "" ]]; then
-            index=$(( $index + 1 ))
-        else
+        if [[ "$type_skip_flag" == "" ]]; then
             echo "$index"
+            index=$(( $index + 1 ))
         fi
     done
 }
@@ -154,7 +153,10 @@ function user_mount_image() {
             local loop_dev="${snippit_loops_rootfs_dir}/${p}"
             local target_dir="${snippit_mbr_rootfs_dir}/p${p}"
             [[ ! -d "$target_dir" ]] && mkdir -p "$target_dir"
-            ! mountpoint -q "$target_dir" && ext4fuse "$loop_dev" "$target_dir" 2> /dev/null
+            # TODO fuse mount FAT file system
+            if [[ "$(file "$loop_dev" | grep "FAT")" == "" ]]; then
+                ! mountpoint -q "$target_dir" && ext4fuse "$loop_dev" "$target_dir" 2> /dev/null
+            fi
         done
         ;;
     esac
