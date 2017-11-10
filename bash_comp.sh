@@ -144,5 +144,5 @@ function _complete_snippit() {
 
 complete -F _complete_snippit snippit
 complete -F _complete_runQEMU runQEMU.sh
-complete -F _complete_image_manager local_image_manager.sh
+complete -F _complete_image_manager image_manager.sh
 

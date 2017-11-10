@@ -70,12 +70,12 @@ function prepare_qemu_image() {
 
     cd "$SCRIPT_DIR/qemu_image"
     ./download.sh
-    cd "$SCRIPT_DIR/qemu_image/images"
+    cd "$SCRIPT_DIR/qemu_image/guest-images"
     [[ $? != 0 ]] && print_message_and_exit "Download pre-built image"
     arm-linux-gnueabi-gcc -g ./matrix_mul.c -o ./matrix
     [[ $? != 0 ]] && print_message_and_exit "arm-linux-gnueabi-gcc"
-    ../local_image_manager.sh push ./matrix rootfs.cpio@/root/test_set/
-    [[ $? != 0 ]] && print_message_and_exit "./local_image_manager.sh push"
+    ../image_manager.sh push ./matrix rootfs.cpio@/root/test_set/
+    [[ $? != 0 ]] && print_message_and_exit "./image_manager.sh push"
 }
 
 function prepare_vpmu_controller() {

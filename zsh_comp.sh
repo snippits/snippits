@@ -151,6 +151,6 @@ function _complete_snippit() {
 
 compdef _complete_snippit snippit
 compdef _complete_runQEMU runQEMU.sh
-compdef _complete_image_manager local_image_manager.sh
+compdef _complete_image_manager image_manager.sh
 autoload colors && colors
 
