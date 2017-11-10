@@ -39,7 +39,7 @@ windows:
   - Snippits:
       layout: 7b52,147x36,0,0[147x7,0,0{73x7,0,0,0,73x7,74,0,2},147x21,0,8,1,147x6,0,30,3]
       panes:
-        - watch -n 0.5 ./snippit_print_status.py
+        - watch -n 0.5 ./tools/snippit_print_status.py
         - watch -n 0.5 echo "Still working on it..."
         - source ./install_command.sh
         - touch /tmp/snippit/log && tail -f /tmp/snippit/log

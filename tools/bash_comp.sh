@@ -4,7 +4,7 @@
 snippit_image_list=""
 snippit_update_flag=0
 
-source "$SNIPPIT_HOME/comp_helper.sh"
+source "$SNIPPIT_HOME/tools/comp_helper.sh"
 
 function _complete_runQEMU() {
     local prev_arg=${COMP_WORDS[COMP_CWORD-1]}
