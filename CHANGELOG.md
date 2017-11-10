@@ -1,4 +1,5 @@
 ## [Unreleased]
+- (qemu_image) Rename local_image_manager.sh -> image_manager.sh
 
 ## [0.8.2] - 2017-10-11
 ### Added
