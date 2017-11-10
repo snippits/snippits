@@ -9,16 +9,14 @@ NC='\033[0;00m'
 
 function ask_response()
 {
-    local user_decision=""
-
-    if [[ -n "$ZSH_VERSION" ]]; then
-        read user_decision\?"${1}`echo $'\n> '`default[${2}]?"
-    else
-        read -p "${1}`echo $'\ndefault '`[${2}]? " user_decision
-    fi
-
-    [[ "$user_decision" != "" ]] && echo "$user_decision"
-    [[ "$user_decision" == "" ]] && echo "$2"
+    while true; do
+        read -p "${1}`echo $'\ndefault '`[${2}]?" yn
+        case $yn in
+            [Yy]* ) echo "y"; break;;
+            [Nn]* ) echo "n"; break;;
+            "" ) echo "$2"; break;;
+        esac
+    done
 }
 
 # NOTE: return 0 when command not found and return 1 when found
@@ -50,18 +48,18 @@ function prepare_qemu_vpmu() {
     mkdir -p "$SCRIPT_DIR/qemu_vpmu/build"
     cd "$SCRIPT_DIR/qemu_vpmu/build"
     if [[ ! -f ./config-host.mak ]]; then
-        local enable_vpmu_debug=$(ask_response "Enable QEMU VPMU debug message? (y/n)" "n")
         # Only do configure when it is the first time executing this
-        if [[ "$enable_vpmu_debug" == "n" ]]; then
-            echo "VPMU debug option is off"
-            ../configure '--target-list=arm-softmmu x86_64-softmmu' '--enable-vpmu' '--enable-vpmu-set'
-        else
-            echo "VPMU debug option is on"
-            ../configure '--target-list=arm-softmmu x86_64-softmmu' '--enable-vpmu' '--enable-vpmu-set' '--enable-vpmu-debug'
-        fi
+        local enable_vpmu_debug=$(ask_response "Enable QEMU VPMU debug message? (y/n)" "n")
+        local options=(--python=$(which python2)
+            --target-list=arm-softmmu,x86_64-softmmu
+            --enable-vpmu
+            --enable-vpmu-set
+        )
+        [[ "$enable_vpmu_debug" == "y" ]] && options+=(--enable-vpmu-debug)
+        ../configure "${options[@]}"
+        [[ $? != 0 ]] && print_message_and_exit "QEMU configure script"
     fi
-    [[ $? != 0 ]] && print_message_and_exit "QEMU configure script"
-    make -j8
+    make -j$(nproc)
     [[ $? != 0 ]] && print_message_and_exit "QEMU make"
 }
 
@@ -158,11 +156,10 @@ function test_binary_dep() {
     fi
 }
 
-test_binary_dep
-init_git
-prepare_qemu_vpmu
-prepare_qemu_image
-prepare_vpmu_controller
-prepare_snippit_ui
-prepare_snippit_external
-
+(test_binary_dep)
+(init_git)
+(prepare_qemu_vpmu)
+(prepare_qemu_image)
+(prepare_vpmu_controller)
+(prepare_snippit_ui)
+(prepare_snippit_external)
