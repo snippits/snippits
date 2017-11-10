@@ -108,7 +108,7 @@ function prepare_snippit_external() {
 }
 
 function test_binary_dep() {
-    local cmds=(gcc git make wget curl sudo)
+    local cmds=(gcc git make wget curl sudo rsync)
 
     for c in ${cmds[*]}; do
         check_command "$c" && echo -e "Required command ${COLOR_RED}${c}${NC} not found"
