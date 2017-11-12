@@ -4,12 +4,12 @@ snippit_mbr_rootfs_dir="$(readlink -f "${SNIPPIT_HOME}/.rootfs_mbr")"
 snippit_loops_rootfs_dir="$(readlink -f "${SNIPPIT_HOME}/.rootfs_loops")"
 snippit_comp_rootfs=""
 
+function image_manager() {
+    "$SNIPPIT_HOME/qemu_image/image_manager.py" "$@"
+}
+
 function _get_image_list() {
-    local res=$($RUN_QEMU_SCRIPT_PATH/image_manager.sh list | sed 1,1d | awk '{print $1}')
-    res=($res) # Convert to array
-    for f in "${res[@]}"; do
-        echo "${f}"
-    done
+    image_manager query list
 }
 
 # Timeout in 5s. This value cannot be too long in order to ensure the mounted dir is latest completion.
@@ -23,7 +23,7 @@ function timed_user_remove_cpio() {
 }
 
 function safe_user_umount() {
-    mountpoint -q "$1" && fusermount -qu "$1" 2> /dev/null
+    mountpoint -q "$1" && fusermount -quz "$1" 2> /dev/null
 }
 
 function timed_user_unmount_e2fs() {
@@ -47,6 +47,7 @@ function timed_user_unmount_mbr() {
 function user_extract_cpio() {
     local file_path="$(readlink -f "$1")"
     [[ ! -r "$file_path" ]] && exit 4
+    rm -rf "$snippit_cpio_rootfs_dir"
     mkdir -p "$snippit_cpio_rootfs_dir"
     (
         # Run as detached process so that no working directory change to the user
@@ -69,36 +70,21 @@ function _check_command() {
 }
 
 function get_mbr_partitions() {
+    local IFS=$'\n' # Change IFS to '\n' locally
     local image_path="$1"
-    if [[ -n "$ZSH_VERSION" ]]; then # assume Zsh
-        local partitions=("${(@f)$(fdisk -l "$image_path" | grep -v -e "Disk.*sectors" | grep "$1")}")
-    elif [[ -n "$BASH_VERSION" ]]; then # assume Bash
-        local partitions=( $(fdisk -l "$image_path" | grep -v -e "Disk.*sectors" | grep "$1") )
-    fi
-    local index=1
+    local partitions=($(image_manager query partitionTableof "$image_path"))
 
     for p in "${partitions[@]}"; do
-        local type_dont_count_flag="$(echo "$p" | grep -e "5 *Extended")"
-        local type_skip_flag="$(echo "$p" | grep -e "82 *Linux swap")"
         # Skip un-mountable partitions
-        [[ "$type_dont_count_flag" != "" ]] && continue
-        if [[ "$type_skip_flag" == "" ]]; then
-            echo "$index"
-            index=$(( $index + 1 ))
-        fi
+        [[ "$p" == *"False" ]] && continue
+        local index=$(echo "$p" | awk '{print $1}')
+        echo $index
     done
 }
 
 function user_mount_image() {
-    local tmp=($($RUN_QEMU_SCRIPT_PATH/image_manager.sh query image_path_and_type "$1"))
-    if [[ -n "$ZSH_VERSION" ]]; then # assume Zsh
-        local image_path="${tmp[1]}"
-        local image_type="${tmp[2]}"
-    elif [[ -n "$BASH_VERSION" ]]; then # assume Bash
-        local image_path="${tmp[0]}"
-        local image_type="${tmp[1]}"
-    fi
-    local duration=$3
+    local image_path="$(image_manager query pathof "$1")"
+    local image_type="$(image_manager query typeof "$1")"
 
     # Reset the return path to target rootfs for completion
     snippit_comp_rootfs=""
@@ -110,7 +96,7 @@ function user_mount_image() {
         (timed_user_remove_cpio 5s "$snippit_cpio_rootfs_dir" &)
         user_extract_cpio "$image_path"
         ;;
-    "EXT2" | "EXT3" | "EXT4")
+    "EXT2" | "EXT3" | "EXT4" | "E2FS")
         snippit_comp_rootfs="$snippit_e2fs_rootfs_dir"
         mkdir -p "$snippit_e2fs_rootfs_dir"
         if _check_command ext4fuse || _check_command fusermount; then
@@ -148,6 +134,7 @@ function user_mount_image() {
         local partitions=($(get_mbr_partitions "$image_path"))
         # Mount loop devices
         mbrfs "$image_path" "$snippit_loops_rootfs_dir" 2> /dev/null
+        local IFS='\n'
         # Mount partitions
         for p in "${partitions[@]}"; do
             local loop_dev="${snippit_loops_rootfs_dir}/${p}"

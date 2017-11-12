@@ -4,7 +4,8 @@
 snippit_image_list=""
 snippit_update_flag=0
 
-source "$SNIPPIT_HOME/tools/comp_helper.sh"
+SCRIPT_DIR="$(readlink -f "$(dirname "${BASH_SOURCE[0]}")")"
+source "${SCRIPT_DIR}/comp_helper.sh"
 
 function _complete_runQEMU() {
     local prev_arg=${COMP_WORDS[COMP_CWORD-1]}
@@ -144,5 +145,5 @@ function _complete_snippit() {
 
 complete -F _complete_snippit snippit
 complete -F _complete_runQEMU runQEMU.sh
-complete -F _complete_image_manager image_manager.sh
+complete -F _complete_image_manager image_manager.py
 
