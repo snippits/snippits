@@ -96,7 +96,7 @@ function _complete_image_manager() {
         curr_arg_num=$(( $curr_arg_num - 1 ))
     fi
     local operation=${s_words[2]}
-    local options="-h --help list push pull ls rm mkdir"
+    local options="-h --help list push pull ls rm mkdir file vim nano cat"
 
     if [[ $snippit_update_flag == 0 ]]; then
         # snippit_update_flag=1
@@ -114,7 +114,7 @@ function _complete_image_manager() {
             [[ $curr_arg_num == 3 ]] && _complete_image_manager_path
             [[ $curr_arg_num == 4 ]] && COMPREPLY=($(compgen -f "$cur_arg"))
             ;;
-        "ls" | "rm" | "mkdir")
+        "ls" | "rm" | "mkdir" | "file" | "vim" | "nano" | "cat")
             compopt -o nospace
             [[ $curr_arg_num == 3 ]] && _complete_image_manager_path
             ;;
