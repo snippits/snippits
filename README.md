@@ -5,7 +5,7 @@ This is the main repo of snippit, containing various of tools and repos. Please 
 1. Run `./prepare.sh` to set up the working environment.
 2. Run `source ./install_command.sh` to get snippit command and completions
 3. Run `./demo.sh` to run a demo of snippit
-4. Open browser and enter URL [http://0.0.0.0:8000/](http://0.0.0.0:8000/)
+4. Open browser and enter URL [http://127.0.0.1:5000/](http://127.0.0.1:5000/)
 
 ![Image of Snippit](https://github.com/snippits/snippit_ui/blob/master/images/snippit.png?raw=true "Sample Image")
 
