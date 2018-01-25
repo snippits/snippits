@@ -66,6 +66,8 @@ function prepare_qemu_vpmu() {
 function prepare_qemu_image() {
     echo -e "#    ${COLOR_GREEN}Prepare qemu_image${NC}"
 
+    pip3 install sh
+
     cd "$SCRIPT_DIR/qemu_image"
     ./download.sh
     cd "$SCRIPT_DIR/qemu_image/guest-images"
@@ -86,6 +88,7 @@ function prepare_vpmu_controller() {
 function prepare_snippit_ui() {
     echo -e "#    ${COLOR_GREEN}Prepare snippit_ui${NC}"
 
+    pip3 install klein numpy anytree logzero
 }
 
 function prepare_snippit_external() {
@@ -106,7 +109,7 @@ function prepare_snippit_external() {
 }
 
 function test_binary_dep() {
-    local cmds=(gcc git make wget curl sudo rsync)
+    local cmds=(gcc git make wget curl sudo rsync python3 pip3)
 
     for c in ${cmds[*]}; do
         check_command "$c" && echo -e "Required command ${COLOR_RED}${c}${NC} not found"
