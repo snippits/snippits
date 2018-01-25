@@ -1,5 +1,7 @@
 ## [Unreleased]
 - (qemu_image) Rename local_image_manager.sh -> image_manager.sh
+- (qemu_image) Fix several bugs
+- (snippit_ui) Fix several bugs
 
 ## [0.8.2] - 2017-10-11
 ### Added

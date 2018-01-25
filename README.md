@@ -2,7 +2,8 @@
 This is the main repo of snippit, containing various of tools and repos. Please use this to make sure the versions of all submodules are in consistent.
 
 # Quick Start Demo
-1. Run `./prepare.sh` to set up the working environment.
+0. Run `pip3 install klein numpy anytree logzero sh` to install Python prerequisite.
+1. Run `./prepare_all.sh` to set up the working environment.
 2. Run `source ./install_command.sh` to get snippit command and completions
 3. Run `./demo.sh` to run a demo of snippit
 4. Open browser and enter URL [http://127.0.0.1:5000/](http://127.0.0.1:5000/)
