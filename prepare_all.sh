@@ -156,10 +156,10 @@ function test_binary_dep() {
     fi
 }
 
-(test_binary_dep)
-(init_git)
-(prepare_qemu_vpmu)
-(prepare_qemu_image)
-(prepare_vpmu_controller)
-(prepare_snippit_ui)
-(prepare_snippit_external)
+test_binary_dep
+init_git
+prepare_qemu_vpmu
+prepare_qemu_image
+prepare_vpmu_controller
+prepare_snippit_ui
+prepare_snippit_external

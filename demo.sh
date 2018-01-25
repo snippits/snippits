@@ -11,4 +11,4 @@ cd "$SCRIPT_DIR/qemu_image"
 
 # Show in browser
 echo -e "${COLOR_GREEN}Please open your browser and enter the following URL${NC}"
-${SCRIPT_DIR}/snippit_ui/scripts/server.py ./demo
+"${SCRIPT_DIR}"/snippit_ui/scripts/server.py "$SCRIPT_DIR"/demo
