@@ -88,7 +88,7 @@ function prepare_vpmu_controller() {
 function prepare_snippit_ui() {
     echo -e "#    ${COLOR_GREEN}Prepare snippit_ui${NC}"
 
-    pip3 install klein numpy anytree logzero
+    pip3 install --user klein numpy anytree logzero
 }
 
 function prepare_snippit_external() {

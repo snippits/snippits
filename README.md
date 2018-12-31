@@ -3,9 +3,9 @@ This is the main repo of snippit, containing various of tools and repos. Please 
 
 # Quick Start Demo
 0. Run `pip3 install klein numpy anytree logzero sh` to install Python prerequisite.
-1. Run `./prepare_all.sh` to set up the working environment.
-2. Run `source ./install_command.sh` to get snippit command and completions
-3. Run `./demo.sh` to run a demo of snippit
+1. Run `./tools/prepare-all.sh` to set up the working environment.
+2. Run `source ./tools/snippits-command.sh` to get snippit command and completions
+3. Run `./tools/demo.sh` to run a demo of snippit
 4. Open browser and enter URL [http://127.0.0.1:5000/](http://127.0.0.1:5000/)
 
 ![Image of Snippit](https://github.com/snippits/snippit_ui/blob/master/images/snippit.png?raw=true "Sample Image")
@@ -71,7 +71,7 @@ Ex:
 * `PHASE_WINDOW_SIZE=100 ./runQEMU.sh vexpress` in __qemu_image__
 
 # Completion System
-The `install_command.sh` support completions for all main scripts and `snippit` command. Both __bash__ and __zsh__ are supported.
+The `tools/snippits-command.sh` support completions for all main scripts and `snippit` command. Both __bash__ and __zsh__ are supported.
 
 In addition, the completion in __zsh__ perform much better and provide full support in image sub-command, i.e. path completion for target image(ext2, ext3, ext4, cpio).
 
