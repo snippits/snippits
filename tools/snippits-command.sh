@@ -1,10 +1,10 @@
 if [[ -n "$ZSH_VERSION" ]]; then
     # assume Zsh
-    SNIPPIT_HOME="$(readlink -f "$(dirname "$0")")"
+    SNIPPIT_HOME="$(readlink -f "$(dirname "$0")/..")"
     source "${SNIPPIT_HOME}/tools/zsh-comp.sh"
 elif [[ -n "$BASH_VERSION" ]]; then
     # assume Bash
-    SNIPPIT_HOME="$(readlink -f "$(dirname "${BASH_SOURCE[0]}")")"
+    SNIPPIT_HOME="$(readlink -f "$(dirname "${BASH_SOURCE[0]}")/..")"
     source "${SNIPPIT_HOME}/tools/bash-comp.sh"
 fi
 export RUN_QEMU_SCRIPT_PATH="${SNIPPIT_HOME}/qemu-image"
