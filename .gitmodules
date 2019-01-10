@@ -9,12 +9,16 @@
 [submodule "qemu-image"]
 	path = qemu-image
 	url = https://github.com/snippits/qemu-image
+	ignore = dirty
 [submodule "qemu-vpmu"]
 	path = qemu-vpmu
 	url = https://github.com/snippits/qemu-vpmu
+	ignore = dirty
 [submodule "snippit-ui"]
 	path = snippit-ui
 	url = https://github.com/snippits/snippit-ui
+	ignore = dirty
 [submodule "vpmu-controller"]
 	path = vpmu-controller
 	url = https://github.com/snippits/vpmu-controller
+	ignore = dirty
