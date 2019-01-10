@@ -15,3 +15,6 @@
 [submodule "snippit-ui"]
 	path = snippit-ui
 	url = https://github.com/snippits/snippit-ui
+[submodule "vpmu-controller"]
+	path = vpmu-controller
+	url = https://github.com/snippits/vpmu-controller
