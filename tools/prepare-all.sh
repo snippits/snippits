@@ -1,7 +1,7 @@
 #!/bin/bash
 # Copyright (c) 2017, Medicine Yeh
 
-SCRIPT_DIR=$(readlink -f "$(dirname "${BASH_SOURCE[0]}")")
+WORK_DIR=$(readlink -f "$(dirname "${BASH_SOURCE[0]}")/../")
 COLOR_RED='\033[1;31m'
 COLOR_GREEN='\033[1;32m'
 COLOR_YELLOW='\033[1;33m'
@@ -36,7 +36,7 @@ function print_message_and_exit() {
 }
 
 function init_git(){
-    cd "$SCRIPT_DIR"
+    cd "$WORK_DIR"
     # Shallow clone to save time
     git submodule update --init --depth 10
     [[ $? != 0 ]] && print_message_and_exit "git submodule"
@@ -45,8 +45,8 @@ function init_git(){
 function prepare_qemu_vpmu() {
     echo -e "#    ${COLOR_GREEN}Prepare qemu_vpmu${NC}"
 
-    mkdir -p "$SCRIPT_DIR/qemu_vpmu/build"
-    cd "$SCRIPT_DIR/qemu_vpmu/build"
+    mkdir -p "$WORK_DIR/qemu-vpmu/build"
+    cd "$WORK_DIR/qemu-vpmu/build"
     if [[ ! -f ./config-host.mak ]]; then
         # Only do configure when it is the first time executing this
         local enable_vpmu_debug=$(ask_response "Enable QEMU VPMU debug message? (y/n)" "n")
@@ -68,19 +68,19 @@ function prepare_qemu_image() {
 
     pip3 install sh
 
-    cd "$SCRIPT_DIR/qemu_image"
+    cd "$WORK_DIR/qemu-image"
     ./download.sh
-    cd "$SCRIPT_DIR/qemu_image/guest-images"
+    cd "$WORK_DIR/qemu-image/guest-images"
     [[ $? != 0 ]] && print_message_and_exit "Download pre-built image"
     arm-linux-gnueabi-gcc -g ./matrix_mul.c -o ./matrix
     [[ $? != 0 ]] && print_message_and_exit "arm-linux-gnueabi-gcc"
-    ${SCRIPT_DIR}/qemu_image/image_manager.py push ./matrix arm/busybox/rootfs.cpio@/root/test_set/
+    ${WORK_DIR}/qemu-image/image_manager.py push ./matrix arm/busybox/rootfs.cpio@/root/test_set/
     [[ $? != 0 ]] && print_message_and_exit "./image_manager.sh push"
 }
 
 function prepare_vpmu_controller() {
     echo -e "#    ${COLOR_GREEN}Prepare vpmu_controller${NC}"
-    cd "$SCRIPT_DIR/vpmu_controller"
+    cd "$WORK_DIR/vpmu-controller"
     make
     [[ $? != 0 ]] && print_message_and_exit "Make vpmu controller"
 }
@@ -93,18 +93,19 @@ function prepare_snippit_ui() {
 
 function prepare_snippit_external() {
     echo -e "#    ${COLOR_GREEN}Prepare external tools${NC}"
+    mkdir -p "$WORK_DIR/external/bin"
 
     if check_command mbrfs; then
-        cd "$SCRIPT_DIR/external/mbrfs"
+        cd "$WORK_DIR/external/mbrfs"
         make
         [[ $? != 0 ]] && print_message_and_exit "make external/mbrfs"
-        cp "$SCRIPT_DIR/external/mbrfs/mbrfs" "$SCRIPT_DIR/bin"
+        cp "$WORK_DIR/external/mbrfs/mbrfs" "$WORK_DIR/external/bin/mbrfs"
     fi
     if check_command ext4fuse; then
-        cd "$SCRIPT_DIR/external/ext4fuse"
+        cd "$WORK_DIR/external/ext4fuse"
         make
         [[ $? != 0 ]] && print_message_and_exit "make external/ext4fuse"
-        cp "$SCRIPT_DIR/external/ext4fuse/ext4fuse" "$SCRIPT_DIR/bin"
+        cp "$WORK_DIR/external/ext4fuse/ext4fuse" "$WORK_DIR/external/bin/ext4fuse"
     fi
 }
 
@@ -138,7 +139,7 @@ function test_binary_dep() {
             "${NC}\n"
 
         if [[ $(ask_response "Download Linaro ARM compiler to ./external? (y/n)" "n") == "y" ]]; then
-            local file_path="${SCRIPT_DIR}/external/gcc-linaro-4.9-gnueabi.tar.xz"
+            local file_path="${WORK_DIR}/external/gcc-linaro-4.9-gnueabi.tar.xz"
             local dir_path="${file_path%%.tar*}"
             local link="https://releases.linaro.org/components/toolchain/binaries/4.9-2017.01/arm-linux-gnueabi/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabi.tar.xz"
 

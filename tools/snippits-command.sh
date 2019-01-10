@@ -1,14 +1,14 @@
 if [[ -n "$ZSH_VERSION" ]]; then
     # assume Zsh
     SNIPPIT_HOME="$(readlink -f "$(dirname "$0")")"
-    source "${SNIPPIT_HOME}/tools/zsh_comp.sh"
+    source "${SNIPPIT_HOME}/tools/zsh-comp.sh"
 elif [[ -n "$BASH_VERSION" ]]; then
     # assume Bash
     SNIPPIT_HOME="$(readlink -f "$(dirname "${BASH_SOURCE[0]}")")"
-    source "${SNIPPIT_HOME}/tools/bash_comp.sh"
+    source "${SNIPPIT_HOME}/tools/bash-comp.sh"
 fi
-export RUN_QEMU_SCRIPT_PATH="${SNIPPIT_HOME}/qemu_image"
-export PATH="${SNIPPIT_HOME}/bin":$PATH
+export RUN_QEMU_SCRIPT_PATH="${SNIPPIT_HOME}/qemu-image"
+export PATH="${SNIPPIT_HOME}/external/bin":$PATH
 echo "Installed shell function - snippit. The completion of all scripts and snippit command are now available."
 echo "\$SNIPPIT_HOME=${SNIPPIT_HOME}"
 
@@ -24,7 +24,7 @@ function snippit() {
             $RUN_QEMU_SCRIPT_PATH/runQEMU.sh $@
             ;;
         image)
-            $RUN_QEMU_SCRIPT_PATH/image_manager.py $@
+            $RUN_QEMU_SCRIPT_PATH/image-manager.py $@
             ;;
         tmux)
             cd "${SNIPPIT_HOME}"

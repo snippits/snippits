@@ -5,7 +5,7 @@ snippit_image_list=""
 snippit_update_flag=0
 
 SCRIPT_DIR="$(readlink -f "$(dirname "$0")")"
-source "${SCRIPT_DIR}/comp_helper.sh"
+source "${SCRIPT_DIR}/comp-helper.sh"
 
 function _complete_runQEMU() {
     local prev_arg=$words[${CURRENT}-1]

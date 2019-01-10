@@ -1,11 +1,11 @@
-snippit_cpio_rootfs_dir="$(readlink -f "${SNIPPIT_HOME}/.rootfs_cpio")"
-snippit_e2fs_rootfs_dir="$(readlink -f "${SNIPPIT_HOME}/.rootfs_e2fs")"
-snippit_mbr_rootfs_dir="$(readlink -f "${SNIPPIT_HOME}/.rootfs_mbr")"
-snippit_loops_rootfs_dir="$(readlink -f "${SNIPPIT_HOME}/.rootfs_loops")"
+snippit_cpio_rootfs_dir="$(readlink -f "${SNIPPIT_HOME}/.rootfs-cpio")"
+snippit_e2fs_rootfs_dir="$(readlink -f "${SNIPPIT_HOME}/.rootfs-e2fs")"
+snippit_mbr_rootfs_dir="$(readlink -f "${SNIPPIT_HOME}/.rootfs-mbr")"
+snippit_loops_rootfs_dir="$(readlink -f "${SNIPPIT_HOME}/.rootfs-loops")"
 snippit_comp_rootfs=""
 
 function image_manager() {
-    "$SNIPPIT_HOME/qemu_image/image_manager.py" "$@"
+    "$SNIPPIT_HOME/qemu-image/image-manager.py" "$@"
 }
 
 function _get_image_list() {
